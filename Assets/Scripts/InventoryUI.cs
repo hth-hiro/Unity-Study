@@ -10,6 +10,8 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private ItemData potion;
     [SerializeField] private ItemData sword;
 
+    [SerializeField] private PickedItemUI pickedItemUI;
+
     private InventorySlotData[] slotDatas;
 
     private InventorySlotData pickedSlot = new InventorySlotData();
@@ -26,6 +28,11 @@ public class InventoryUI : MonoBehaviour
         InitializeSlotUIs();
         TestAddItems();
         RefreshAllSlots();
+    }
+
+    void Update()
+    {
+        UpdatePickedItemUI();
     }
 
     void Initialize()
@@ -133,5 +140,18 @@ public class InventoryUI : MonoBehaviour
         }
 
         RefreshAllSlots();
+    }
+
+    void UpdatePickedItemUI()
+    {
+        if (hasPickedItem && !pickedSlot.IsEmpty())
+        {
+            pickedItemUI.SetItem(pickedSlot.item, pickedSlot.amount);
+            pickedItemUI.FollowMouse();
+        }
+        else
+        {
+            pickedItemUI.SetEmpty();
+        }
     }
 }
