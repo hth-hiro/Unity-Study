@@ -11,6 +11,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private ItemData sword;
 
     [SerializeField] private PickedItemUI pickedItemUI;
+    [SerializeField] private TooltipUI tooltipUI;
 
     private InventorySlotData[] slotDatas;
 
@@ -33,6 +34,7 @@ public class InventoryUI : MonoBehaviour
     void Update()
     {
         UpdatePickedItemUI();
+        UpdateTooltipUI();
     }
 
     void Initialize()
@@ -142,6 +144,26 @@ public class InventoryUI : MonoBehaviour
         RefreshAllSlots();
     }
 
+    public void OnHoverSlot(int index)
+    {
+        if (hasPickedItem) return;
+
+        InventorySlotData hoveredSlot = slotDatas[index];
+
+        if (hoveredSlot.IsEmpty())
+        {
+            tooltipUI.Hide();
+            return;
+        }
+
+        tooltipUI.Show(hoveredSlot.item);
+    }
+
+    public void OnExitSlot(int index)
+    {
+        tooltipUI.Hide();
+    }
+
     void UpdatePickedItemUI()
     {
         if (hasPickedItem && !pickedSlot.IsEmpty())
@@ -152,6 +174,14 @@ public class InventoryUI : MonoBehaviour
         else
         {
             pickedItemUI.SetEmpty();
+        }
+    }
+
+    void UpdateTooltipUI()
+    {
+        if (tooltipUI.gameObject.activeSelf)
+        {
+            tooltipUI.FollowMouse();
         }
     }
 }

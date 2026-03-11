@@ -1,7 +1,8 @@
 using UnityEngine;
 
 // ScriptableObject는 기존 Monobeavior와 다르게 씬이 파괴되어도 유지되는 스크립트
-// 단 생애주기 함수는 사용 불가능
+// 데이터를 담는 스크립트이며, Project 내에서 .asset 형태로 존재
+// 씬에 붙지 않기 때문에 생애주기 함수는 사용 불가능
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "ItemData")]
 public class ItemData : ScriptableObject

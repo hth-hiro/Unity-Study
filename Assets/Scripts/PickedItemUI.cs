@@ -7,14 +7,13 @@ public class PickedItemUI : MonoBehaviour
 {
     [SerializeField] private Image icon;
     [SerializeField] private TMP_Text amountText;
-    private RectTransform rectTransform;
+    [SerializeField] private Vector2 offset = new Vector2(20f, -20f);
 
-    private Vector2 offset;
+    private RectTransform rectTransform;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        offset = new Vector2(20, -20);
     }
 
     public void SetEmpty()
@@ -38,6 +37,9 @@ public class PickedItemUI : MonoBehaviour
 
     public void FollowMouse()
     {
+        if (Mouse.current == null)
+            return;
+
         rectTransform.position = Mouse.current.position.ReadValue() + offset;
     }
 }
