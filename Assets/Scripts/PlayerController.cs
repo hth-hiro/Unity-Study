@@ -13,10 +13,33 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject inventory;
     [SerializeField] private float moveSpeed = 5f;
 
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference toggleInventoryAction;
+
     void Awake()
     {
         playerRB = GameObject.Find("Player").GetComponent<Rigidbody>();
     }
+
+    // 이벤트 등록
+    void OnEnable()
+    {
+        moveAction.action.Enable();
+        toggleInventoryAction.action.Enable();
+
+        toggleInventoryAction.action.performed += OnToggleInventory;
+    }
+
+    // 이벤트 제거 (중복 방지)
+    void OnDisable()
+    {
+        toggleInventoryAction.action.performed -= OnToggleInventory;
+
+        moveAction.action.Disable();
+        toggleInventoryAction.action.Disable();
+    }
+
     void Start()
     {
         inventory.gameObject.SetActive(false);
@@ -25,10 +48,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        PlayerInput();
+        Vector2 moveInput = moveAction.action.ReadValue<Vector2>();
 
         if (!isInventoryOpened)
-            PlayerMove();
+            inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+        else
+            inputDirection = Vector3.zero;
     }
 
     void FixedUpdate()
@@ -36,29 +61,9 @@ public class PlayerController : MonoBehaviour
         playerRB.linearVelocity = new Vector3(inputDirection.x * moveSpeed, playerRB.linearVelocity.y, inputDirection.z * moveSpeed);
     }
 
-    void PlayerMove()
+    void OnToggleInventory(InputAction.CallbackContext ctx)
     {
-        inputDirection = Vector3.zero;
-
-        if (Keyboard.current.wKey.isPressed)
-            inputDirection += Vector3.forward;
-
-        if (Keyboard.current.sKey.isPressed)
-            inputDirection += Vector3.back;
-
-        if (Keyboard.current.aKey.isPressed)
-            inputDirection += Vector3.left;
-
-        if (Keyboard.current.dKey.isPressed)
-            inputDirection += Vector3.right;
-    }
-
-    void PlayerInput()
-    {
-        if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            isInventoryOpened = !isInventoryOpened;
-            inventory.SetActive(isInventoryOpened);
-        }
+        isInventoryOpened = !isInventoryOpened;
+        inventory.SetActive(isInventoryOpened);
     }
 }

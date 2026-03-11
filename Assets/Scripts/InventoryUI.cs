@@ -31,6 +31,11 @@ public class InventoryUI : MonoBehaviour
         RefreshAllSlots();
     }
 
+    void OnDisable()
+    {
+        if (tooltipUI != null) tooltipUI.Hide();
+    }
+
     void Update()
     {
         UpdatePickedItemUI();
@@ -91,6 +96,8 @@ public class InventoryUI : MonoBehaviour
 
                 clickedSlot.Clear();
                 hasPickedItem = true;
+
+                tooltipUI.Hide();
             }
         }
         else
@@ -139,6 +146,11 @@ public class InventoryUI : MonoBehaviour
                     hasPickedItem = true;
                 }
             }
+
+            if (!hasPickedItem)
+            {
+                OnHoverSlot(index);
+            }
         }
 
         RefreshAllSlots();
@@ -157,6 +169,7 @@ public class InventoryUI : MonoBehaviour
         }
 
         tooltipUI.Show(hoveredSlot.item);
+        tooltipUI.FollowMouse();
     }
 
     public void OnExitSlot(int index)
@@ -179,7 +192,7 @@ public class InventoryUI : MonoBehaviour
 
     void UpdateTooltipUI()
     {
-        if (tooltipUI.gameObject.activeSelf)
+        if (tooltipUI.gameObject.activeInHierarchy)
         {
             tooltipUI.FollowMouse();
         }

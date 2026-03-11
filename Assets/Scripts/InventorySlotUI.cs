@@ -3,11 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] private Image icon;
     [SerializeField] private TMP_Text amountText;
-    [SerializeField] private Button button;
 
     private InventoryUI inventoryUI;
     private int slotIndex;
@@ -16,12 +15,6 @@ public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         inventoryUI = ui;
         slotIndex = index;
-
-        if (button != null)
-        {
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(OnClickSlot);
-        }
     }
 
     public void SetEmpty()
@@ -43,14 +36,18 @@ public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
         amountText.text = amount > 1 ? amount.ToString() : "";
     }
 
-    private void OnClickSlot()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        inventoryUI.OnClickSlot(slotIndex);
+        // 이 함수는 좌클릭 우클릭 휠클릭 모두 감지됨. 분기 나눠야 함.
+        // 1. 좌클릭일 때
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            inventoryUI.OnClickSlot(slotIndex);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"Hover Enter: {gameObject.name}");
         inventoryUI.OnHoverSlot(slotIndex);
     }
 

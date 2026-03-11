@@ -6,7 +6,7 @@ public class TooltipUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text itemNameText;
     [SerializeField] private TMP_Text descriptionText;
-    [SerializeField] private Vector2 offset = new Vector2(20f, -20f);
+    [SerializeField] private Vector2 offset = new Vector2(25f, -25f);
 
     private RectTransform rectTransform;
 
@@ -18,15 +18,13 @@ public class TooltipUI : MonoBehaviour
 
     public void Show(ItemData item)
     {
-        if (item == null)
-        {
-            Hide();
-            return;
-        }
+        if (item == null) return;
 
         gameObject.SetActive(true);
         itemNameText.text = item.itemName;
         descriptionText.text = item.description;
+
+        FollowMouse();
     }
 
     public void Hide()
