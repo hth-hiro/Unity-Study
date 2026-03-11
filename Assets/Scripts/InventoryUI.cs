@@ -57,8 +57,8 @@ public class InventoryUI : MonoBehaviour
         slotDatas[0].item = potion;
         slotDatas[0].amount = 1;
 
-        slotDatas[1].item = sword;
-        slotDatas[1].amount = 1;
+        slotDatas[1].item = apple;
+        slotDatas[1].amount = 63;
 
         slotDatas[2].item = apple;
         slotDatas[2].amount = 5;
