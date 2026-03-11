@@ -1,5 +1,6 @@
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class InventoryUI : MonoBehaviour
 
     [SerializeField] private PickedItemUI pickedItemUI;
     [SerializeField] private TooltipUI tooltipUI;
+    [SerializeField] private ContextMenuUI contextMenuUI;
 
     private InventorySlotData[] slotDatas;
 
@@ -154,6 +156,16 @@ public class InventoryUI : MonoBehaviour
         }
 
         RefreshAllSlots();
+    }
+
+    public void OnRightClickSlot(int index)
+    {
+        if (hasPickedItem) return;
+
+        InventorySlotData slot = slotDatas[index];
+        if (slot.IsEmpty()) return;
+
+        contextMenuUI.Open(index, slot.item, Mouse.current.position.ReadValue(), this);
     }
 
     public void OnHoverSlot(int index)

@@ -44,6 +44,11 @@ public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             inventoryUI.OnClickSlot(slotIndex);
         }
+
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            inventoryUI.OnRightClickSlot(slotIndex);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
