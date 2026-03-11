@@ -10,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private ItemData apple;
     [SerializeField] private ItemData potion;
     [SerializeField] private ItemData sword;
+    [SerializeField] private ItemData meat;
 
     [SerializeField] private PickedItemUI pickedItemUI;
     [SerializeField] private TooltipUI tooltipUI;
@@ -71,6 +72,15 @@ public class InventoryUI : MonoBehaviour
 
         slotDatas[2].item = apple;
         slotDatas[2].amount = 5;
+
+        slotDatas[3].item = meat;
+        slotDatas[3].amount = 62;
+
+        slotDatas[4].item = meat;
+        slotDatas[4].amount = 2;
+
+        slotDatas[5].item = meat;
+        slotDatas[5].amount = 7;
     }
 
     void RefreshAllSlots()
@@ -121,7 +131,7 @@ public class InventoryUI : MonoBehaviour
                     int maxStack = clickedSlot.item.maxStack;
                     int totalAmount = clickedSlot.amount + pickedSlot.amount;
 
-                    if (totalAmount < maxStack)
+                    if (totalAmount <= maxStack)
                     {
                         clickedSlot.amount = totalAmount;
                         pickedSlot.Clear();

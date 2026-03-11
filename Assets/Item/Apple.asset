@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\uC0AC\uACFC"
-  icon: {fileID: 21300000, guid: b2b7784f2d01d5c4ca4019e8c751afed, type: 3}
+  icon: {fileID: 21300000, guid: dd026c559361ee24da5a76f1e24528e4, type: 3}
   description: "\uBC30\uACE0\uD514\uC744 2 \uD68C\uBCF5\uD55C\uB2E4."
   maxStack: 64
   itemType: 1
