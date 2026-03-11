@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3be32eb6809879141b38d6aba63b61a6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - apple: {fileID: 11400000, guid: a5a6a90e8d56c6843a8ce21f5fc9359a, type: 2}
+  - potion: {fileID: 11400000, guid: 9da62568983e6ed4a83a720d2d879352, type: 2}
+  - sword: {fileID: 11400000, guid: e2e2bf73996c5bf449fd4cdc48c7bc98, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
