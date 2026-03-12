@@ -25,12 +25,12 @@ public class InventoryUI : MonoBehaviour
     void Awake()
     {
         slots = GetComponentsInChildren<InventorySlotUI>();
+        Initialize();
+        InitializeSlotUIs();
     }
 
     void Start()
     {
-        Initialize();
-        InitializeSlotUIs();
         TestAddItems();
         RefreshAllSlots();
     }
@@ -41,32 +41,61 @@ public class InventoryUI : MonoBehaviour
         if (contextMenuUI != null) contextMenuUI.Close();
         if (pickedItemUI != null) pickedItemUI.SetEmpty();
 
-        InventorySlotData slot = pickedSlot;
+        if (slots == null || slotDatas == null) return;
+
         if (hasPickedItem && !pickedSlot.IsEmpty())
         {
-            if (slotDatas[pickedSlotIndex].IsEmpty())
+            for (int i = 0; i < slotDatas.Length; i++)
             {
-                slotDatas[pickedSlotIndex].item = pickedSlot.item;
-                slotDatas[pickedSlotIndex].amount = pickedSlot.amount;
-            }
-            else
-            {
-                for (int i = 0; i < slotDatas.Length; i++)
+                if (!slotDatas[i].IsEmpty() && slotDatas[i].item == pickedSlot.item)
                 {
-                    if (!slotDatas[i].IsEmpty())
+                    int maxStack = slotDatas[i].item.maxStack;
+                    int canAdd = maxStack - slotDatas[i].amount;
+
+                    if (canAdd > 0)
                     {
-                        slotDatas[i].item = pickedSlot.item;
-                        slotDatas[i].amount = pickedSlot.amount;
-                        break;
+                        int addAmount = Mathf.Min(canAdd, pickedSlot.amount);
+                        slotDatas[i].amount += addAmount;
+                        pickedSlot.amount -= addAmount;
+
+                        if (pickedSlot.IsEmpty()) break;
                     }
                 }
             }
 
-            pickedSlot.Clear();
-            hasPickedItem = false;
-            pickedSlotIndex = -1;
-            RefreshAllSlots();
+            if (!pickedSlot.IsEmpty())
+            {
+                if (pickedSlotIndex != -1 && slotDatas[pickedSlotIndex].IsEmpty())
+                {
+                    slotDatas[pickedSlotIndex].item = pickedSlot.item;
+                    slotDatas[pickedSlotIndex].amount = pickedSlot.amount;
+                    pickedSlot.Clear();
+                }
+                else
+                {
+                    for (int i = 0; i < slotDatas.Length; i++)
+                    {
+                        if (slotDatas[i].IsEmpty())
+                        {
+                            slotDatas[i].item = pickedSlot.item;
+                            slotDatas[i].amount = pickedSlot.amount;
+                            pickedSlot.Clear();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!pickedSlot.IsEmpty())
+            {
+                // TODO : 아이템 생성로직
+            }
         }
+
+        pickedSlot.Clear();
+        hasPickedItem = false;
+        pickedSlotIndex = -1;
+        RefreshAllSlots();
     }
 
     void Update()
