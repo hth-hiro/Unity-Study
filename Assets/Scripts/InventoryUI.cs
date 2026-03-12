@@ -20,6 +20,7 @@ public class InventoryUI : MonoBehaviour
 
     private InventorySlotData pickedSlot = new InventorySlotData();
     private bool hasPickedItem = false;
+    private int pickedSlotIndex = -1;
 
     void Awake()
     {
@@ -37,6 +38,35 @@ public class InventoryUI : MonoBehaviour
     void OnDisable()
     {
         if (tooltipUI != null) tooltipUI.Hide();
+        if (contextMenuUI != null) contextMenuUI.Close();
+        if (pickedItemUI != null) pickedItemUI.SetEmpty();
+
+        InventorySlotData slot = pickedSlot;
+        if (hasPickedItem && !pickedSlot.IsEmpty())
+        {
+            if (slotDatas[pickedSlotIndex].IsEmpty())
+            {
+                slotDatas[pickedSlotIndex].item = pickedSlot.item;
+                slotDatas[pickedSlotIndex].amount = pickedSlot.amount;
+            }
+            else
+            {
+                for (int i = 0; i < slotDatas.Length; i++)
+                {
+                    if (!slotDatas[i].IsEmpty())
+                    {
+                        slotDatas[i].item = pickedSlot.item;
+                        slotDatas[i].amount = pickedSlot.amount;
+                        break;
+                    }
+                }
+            }
+
+            pickedSlot.Clear();
+            hasPickedItem = false;
+            pickedSlotIndex = -1;
+            RefreshAllSlots();
+        }
     }
 
     void Update()
@@ -83,6 +113,12 @@ public class InventoryUI : MonoBehaviour
         slotDatas[5].amount = 7;
     }
 
+    public int AddItem(ItemData item, int amount)
+    {
+        // TODO: 구현부 추가
+        return 0;
+    }
+
     void RefreshAllSlots()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -94,8 +130,15 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public int GetAmount(int index)
+    {
+        return slotDatas[index].amount;
+    }
+
     public void OnClickSlot(int index)
     {
+        contextMenuUI.Close();
+
         InventorySlotData clickedSlot = slotDatas[index];
 
         // 1. 아무것도 안들고있고, 클릭한 슬롯에 아이템이 있으면 집기
@@ -105,6 +148,7 @@ public class InventoryUI : MonoBehaviour
             {
                 pickedSlot.item = clickedSlot.item;
                 pickedSlot.amount = clickedSlot.amount;
+                pickedSlotIndex = index;
 
                 clickedSlot.Clear();
                 hasPickedItem = true;
@@ -122,6 +166,7 @@ public class InventoryUI : MonoBehaviour
 
                 pickedSlot.Clear();
                 hasPickedItem = false;
+                pickedSlotIndex = -1;
             }
             else
             {
@@ -136,6 +181,7 @@ public class InventoryUI : MonoBehaviour
                         clickedSlot.amount = totalAmount;
                         pickedSlot.Clear();
                         hasPickedItem = false;
+                        pickedSlotIndex = -1;
                     }
                     else
                     {
@@ -156,6 +202,7 @@ public class InventoryUI : MonoBehaviour
                     pickedSlot.amount = tempAmount;
 
                     hasPickedItem = true;
+                    pickedSlotIndex = index;
                 }
             }
 
@@ -175,12 +222,17 @@ public class InventoryUI : MonoBehaviour
         InventorySlotData slot = slotDatas[index];
         if (slot.IsEmpty()) return;
 
+        tooltipUI.Hide();
         contextMenuUI.Open(index, slot.item, Mouse.current.position.ReadValue(), this);
     }
 
     public void OnHoverSlot(int index)
     {
-        if (hasPickedItem) return;
+        if (hasPickedItem || contextMenuUI.gameObject.activeSelf)
+        {
+            tooltipUI.Hide();
+            return;
+        }
 
         InventorySlotData hoveredSlot = slotDatas[index];
 
@@ -197,6 +249,39 @@ public class InventoryUI : MonoBehaviour
     public void OnExitSlot(int index)
     {
         tooltipUI.Hide();
+    }
+
+    public void HandleAction(int index)
+    {
+        InventorySlotData slot = slotDatas[index];
+        if (slot.IsEmpty()) return;
+
+        slot.amount -= 1;
+
+        if (slot.amount <= 0)
+        {
+            slot.Clear();
+            tooltipUI.Hide(); // 아이템이 사라졌으니 툴팁도 끔
+        }
+
+        RefreshAllSlots();
+    }
+
+    public void HandleSplit(int index)
+    {
+        InventorySlotData slot = slotDatas[index];
+        if (slot.amount <= 1) return;
+
+        int originAmount = slotDatas[index].amount;
+        int splitAmount = slotDatas[index].amount / 2;
+
+        pickedSlot.item = slot.item;
+        pickedSlot.amount = splitAmount;
+        hasPickedItem = true;
+
+        slot.amount = originAmount - splitAmount;
+
+        RefreshAllSlots();
     }
 
     void UpdatePickedItemUI()
