@@ -2,9 +2,9 @@ using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InventroryPanel : MonoBehaviour
+public class InventoryPanel : MonoBehaviour, ISlotHandler
 {
-    public static InventroryPanel Instance { get; private set; }
+    public static InventoryPanel Instance { get; private set; }
 
     [SerializeField] private BaseSlot[] slots;
 
@@ -16,7 +16,6 @@ public class InventroryPanel : MonoBehaviour
     [SerializeField] private ItemData chestplate;
 
     [SerializeField] private PickedItemUI pickedItemUI;
-    [SerializeField] private ContextMenuUI contextMenuUI;
 
     private InventorySlotData[] slotDatas;
 
@@ -47,7 +46,7 @@ public class InventroryPanel : MonoBehaviour
     void OnDisable()
     {
         if (TooltipManager.Instance != null) TooltipManager.Instance.Hide();
-        if (contextMenuUI != null) contextMenuUI.Close();
+        if (ContextMenuManager.Instance != null) ContextMenuManager.Instance.Close();
         if (pickedItemUI != null) pickedItemUI.SetEmpty();
 
         if (slots == null || slotDatas == null) return;
@@ -223,7 +222,7 @@ public class InventroryPanel : MonoBehaviour
 
     public void OnClickSlot(int index)
     {
-        contextMenuUI.Close();
+        ContextMenuManager.Instance.Close();
         Debug.Log($"{index}번 슬롯 클릭됨!");
 
         InventorySlotData clickedSlot = slotDatas[index];
@@ -233,10 +232,9 @@ public class InventroryPanel : MonoBehaviour
         {
             if (targetSlotUI is EquipmentSlotUI equipSlot)
             {
-                Debug.Log($"장착 슬롯 클릭됨! 아이템 타입: {pickedSlot.item.equipType}, 슬롯 허용 타입: {equipSlot.allowedType}");
                 if (!equipSlot.CanEquip(pickedSlot.item))
                 {
-                    Debug.Log("CanEquip에서 거부됨");
+                    Debug.Log("놓을 수 없습니다.");
                     return;
                 }
             }
@@ -324,12 +322,12 @@ public class InventroryPanel : MonoBehaviour
         if (slot.IsEmpty()) return;
 
         TooltipManager.Instance.Hide();
-        contextMenuUI.Open(index, slot.item, Mouse.current.position.ReadValue(), this);
+        ContextMenuManager.Instance.Open(index, slot.item, Mouse.current.position.ReadValue(), this);
     }
 
     public void OnHoverSlot(int index)
     {
-        if (hasPickedItem || contextMenuUI.gameObject.activeSelf)
+        if (hasPickedItem || ContextMenuManager.Instance.gameObject.activeSelf)
         {
             TooltipManager.Instance.Hide();
             return;

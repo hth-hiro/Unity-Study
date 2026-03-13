@@ -31,7 +31,7 @@ public class ShopSlotUI : BaseSlot
 
         if (CurrencyManager.Instance.ConsumeGold(shopItem.buyPrice))
         {
-            InventroryPanel.Instance.AddItem(shopItem, 1);
+            InventoryPanel.Instance.AddItem(shopItem, 1);
         }
     }
 }

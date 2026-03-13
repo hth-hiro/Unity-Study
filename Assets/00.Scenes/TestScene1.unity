@@ -4507,7 +4507,6 @@ GameObject:
   - component: {fileID: 772992717}
   - component: {fileID: 772992721}
   - component: {fileID: 772992720}
-  - component: {fileID: 772992719}
   - component: {fileID: 772992718}
   - component: {fileID: 772992722}
   m_Layer: 5
@@ -4551,22 +4550,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ContextMenuUI
   actionText: {fileID: 2062537774}
+  actionButton: {fileID: 1281088364}
   splitButton: {fileID: 1540636857}
---- !u!114 &772992719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 772992716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d2b7b726f0c3ff46b9e2cdba392a94f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TooltipUI
-  itemNameText: {fileID: 0}
-  descriptionText: {fileID: 0}
-  offset: {x: 100, y: -70}
 --- !u!114 &772992720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9849,6 +9834,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1802564558}
   m_CullTransparentMesh: 1
+--- !u!1 &1806869811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1806869813}
+  - component: {fileID: 1806869812}
+  m_Layer: 0
+  m_Name: ContextMenuManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1806869812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1806869811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de43d6bd1fd1e7d42bbe9121490f5753, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ContextMenuManager
+  contextMenuUI: {fileID: 772992718}
+--- !u!4 &1806869813
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1806869811}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1813744119
 GameObject:
   m_ObjectHideFlags: 0
@@ -10198,6 +10228,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843224814}
   m_CullTransparentMesh: 1
+--- !u!1 &1902377081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1902377083}
+  - component: {fileID: 1902377082}
+  m_Layer: 0
+  m_Name: TooltipManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1902377082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902377081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98694020854fc3458a5d86bbcf77569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TooltipManager
+  tooltipUI: {fileID: 381970895}
+--- !u!4 &1902377083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902377081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1904419934
 GameObject:
   m_ObjectHideFlags: 0
@@ -11548,7 +11623,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1993150736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3be32eb6809879141b38d6aba63b61a6, type: 3}
+  m_Script: {fileID: 11500000, guid: 30093a0ef4978cb47b5329f64114ddad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventroryPanel
   slots: []
@@ -11558,8 +11633,6 @@ MonoBehaviour:
   meat: {fileID: 11400000, guid: 0de98d28cf6e7e8478a601a0c08e5f22, type: 2}
   chestplate: {fileID: 11400000, guid: be24bb1af51a0ce40b3399b610479061, type: 2}
   pickedItemUI: {fileID: 1383427848}
-  tooltipUI: {fileID: 381970895}
-  contextMenuUI: {fileID: 772992718}
 --- !u!1 &2062537772
 GameObject:
   m_ObjectHideFlags: 0
@@ -11937,3 +12010,5 @@ SceneRoots:
   - {fileID: 1979000781}
   - {fileID: 524057948}
   - {fileID: 1316085671}
+  - {fileID: 1902377083}
+  - {fileID: 1806869813}

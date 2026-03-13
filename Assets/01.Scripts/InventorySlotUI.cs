@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public class InventorySlotUI : BaseSlot
 {
-    public override void Initialize(InventroryPanel inventory, int slotIndex)
+    public override void Initialize(ISlotHandler handler, int slotIndex)
     {
-        base.Initialize(inventory, slotIndex);
+        base.Initialize(handler, slotIndex);
     }
 
     public override void OnPointerClick(PointerEventData eventData)
