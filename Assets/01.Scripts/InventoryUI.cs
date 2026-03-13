@@ -4,13 +4,14 @@ using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
-    [SerializeField] private InventorySlotUI[] slots;
+    [SerializeField] private BaseSlot[] slots;
 
     [Header("Test Items")]
     [SerializeField] private ItemData apple;
     [SerializeField] private ItemData potion;
     [SerializeField] private ItemData sword;
     [SerializeField] private ItemData meat;
+    [SerializeField] private ItemData chestplate;
 
     [SerializeField] private PickedItemUI pickedItemUI;
     [SerializeField] private TooltipUI tooltipUI;
@@ -24,7 +25,13 @@ public class InventoryUI : MonoBehaviour
 
     void Awake()
     {
-        slots = GetComponentsInChildren<InventorySlotUI>();
+        slots = GetComponentsInChildren<BaseSlot>();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Debug.Log($"슬롯 {i}번: {slots[i].name}");
+        }
+
         Initialize();
         InitializeSlotUIs();
     }
@@ -140,12 +147,47 @@ public class InventoryUI : MonoBehaviour
 
         slotDatas[5].item = meat;
         slotDatas[5].amount = 7;
+
+        slotDatas[6].item = chestplate;
+        slotDatas[6].amount = 1;
     }
 
     public int AddItem(ItemData item, int amount)
     {
         // TODO: 구현부 추가
         return 0;
+    }
+
+    private void EquipItem(int index)
+    {
+        ItemData itemToEquip = slotDatas[index].item;
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] is EquipmentSlotUI equipSlot)
+            {
+                if (equipSlot.CanEquip(itemToEquip))
+                {
+                    SwapItems(index, i);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void SwapItems(int index, int i)
+    {
+        InventorySlotData temp = new InventorySlotData();
+        temp.item = slotDatas[index].item;
+        temp.amount = slotDatas[index].amount;
+
+        slotDatas[index].item = slotDatas[i].item;
+        slotDatas[index].amount = slotDatas[i].amount;
+
+        slotDatas[i].item = temp.item;
+        slotDatas[i].amount = temp.amount;
+
+        RefreshAllSlots();
     }
 
     void RefreshAllSlots()
@@ -167,8 +209,23 @@ public class InventoryUI : MonoBehaviour
     public void OnClickSlot(int index)
     {
         contextMenuUI.Close();
+        Debug.Log($"{index}번 슬롯 클릭됨!");
 
         InventorySlotData clickedSlot = slotDatas[index];
+        BaseSlot targetSlotUI = slots[index];
+
+        if (hasPickedItem)
+        {
+            if (targetSlotUI is EquipmentSlotUI equipSlot)
+            {
+                Debug.Log($"장착 슬롯 클릭됨! 아이템 타입: {pickedSlot.item.equipType}, 슬롯 허용 타입: {equipSlot.allowedType}");
+                if (!equipSlot.CanEquip(pickedSlot.item))
+                {
+                    Debug.Log("CanEquip에서 거부됨");
+                    return;
+                }
+            }
+        }
 
         // 1. 아무것도 안들고있고, 클릭한 슬롯에 아이템이 있으면 집기
         if (!hasPickedItem)
@@ -284,6 +341,12 @@ public class InventoryUI : MonoBehaviour
     {
         InventorySlotData slot = slotDatas[index];
         if (slot.IsEmpty()) return;
+
+        if (slot.item.itemType == ItemType.Equipment)
+        {
+            EquipItem(index);
+            return;
+        }
 
         slot.amount -= 1;
 
