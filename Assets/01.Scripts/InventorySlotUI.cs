@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InventorySlotUI : BaseSlot, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class InventorySlotUI : BaseSlot
 {
-    public override void Initialize(InventoryUI inventory, int slotIndex)
+    public override void Initialize(InventroryPanel inventory, int slotIndex)
     {
         base.Initialize(inventory, slotIndex);
     }

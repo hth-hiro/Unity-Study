@@ -14,7 +14,7 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     protected ItemData currentItem;
     protected int currentAmount;
-    protected InventoryUI owner;
+    protected InventroryPanel owner;
     protected int index;
 
     public bool IsEmpty => currentItem == null;
@@ -52,7 +52,7 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         amountGo.SetActive(false);
     }
 
-    public virtual void Initialize(InventoryUI inventory, int slotIndex)
+    public virtual void Initialize(InventroryPanel inventory, int slotIndex)
     {
         owner = inventory;
         index = slotIndex;

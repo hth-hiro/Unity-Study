@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 
 // ScriptableObject는 기존 Monobeavior와 다르게 씬이 파괴되어도 유지되는 스크립트
@@ -14,7 +15,13 @@ public class ItemData : ScriptableObject
     public Sprite icon;
     public string description;
     public int maxStack = 64;
-    public ItemType itemType;
-    public EquipType equipType;
+
+    [Header("Type")]
+    public ItemType itemType = ItemType.None;
+    public EquipType equipType = EquipType.None;
+
+    [Header("Price")]
+    public int buyPrice;
+    public int sellPrice;
 }
 

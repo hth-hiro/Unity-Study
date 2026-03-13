@@ -38,6 +38,6 @@ public class TooltipManager : MonoBehaviour
 
     void Update()
     {
-        
+        tooltipUI.FollowMouse();
     }
 }

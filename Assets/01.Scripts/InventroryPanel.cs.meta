@@ -7,6 +7,11 @@ MonoImporter:
   - apple: {fileID: 11400000, guid: a5a6a90e8d56c6843a8ce21f5fc9359a, type: 2}
   - potion: {fileID: 11400000, guid: 9da62568983e6ed4a83a720d2d879352, type: 2}
   - sword: {fileID: 11400000, guid: e2e2bf73996c5bf449fd4cdc48c7bc98, type: 2}
+  - meat: {fileID: 11400000, guid: 0de98d28cf6e7e8478a601a0c08e5f22, type: 2}
+  - chestplate: {instanceID: 0}
+  - pickedItemUI: {instanceID: 0}
+  - tooltipUI: {instanceID: 0}
+  - contextMenuUI: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

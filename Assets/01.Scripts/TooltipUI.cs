@@ -20,6 +20,9 @@ public class TooltipUI : MonoBehaviour
     {
         if (item == null) return;
 
+        var cg = GetComponent<CanvasGroup>();
+        cg.alpha = 1;
+
         gameObject.SetActive(true);
         itemNameText.text = item.itemName;
         descriptionText.text = item.description;
@@ -29,6 +32,9 @@ public class TooltipUI : MonoBehaviour
 
     public void Hide()
     {
+        var cg = GetComponent<CanvasGroup>();
+        cg.alpha = 0;
+
         gameObject.SetActive(false);
     }
 

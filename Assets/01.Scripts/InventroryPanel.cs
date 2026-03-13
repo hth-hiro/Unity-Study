@@ -2,8 +2,10 @@ using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InventoryUI : MonoBehaviour
+public class InventroryPanel : MonoBehaviour
 {
+    public static InventroryPanel Instance { get; private set; }
+
     [SerializeField] private BaseSlot[] slots;
 
     [Header("Test Items")]
@@ -14,7 +16,6 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private ItemData chestplate;
 
     [SerializeField] private PickedItemUI pickedItemUI;
-    [SerializeField] private TooltipUI tooltipUI;
     [SerializeField] private ContextMenuUI contextMenuUI;
 
     private InventorySlotData[] slotDatas;
@@ -25,26 +26,27 @@ public class InventoryUI : MonoBehaviour
 
     void Awake()
     {
-        slots = GetComponentsInChildren<BaseSlot>();
-
-        for (int i = 0; i < slots.Length; i++)
-        {
-            Debug.Log($"슬롯 {i}번: {slots[i].name}");
-        }
-
-        Initialize();
-        InitializeSlotUIs();
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
     {
-        TestAddItems();
-        RefreshAllSlots();
+        slots = GetComponentsInChildren<BaseSlot>();
+
+        Initialize();
+        InitializeSlotUIs();
+
+        AddItem(meat, 70);
+        AddItem(sword, 1);
+        AddItem(potion, 3);
+        AddItem(chestplate, 1);
+        AddItem(apple, 32);
     }
 
     void OnDisable()
     {
-        if (tooltipUI != null) tooltipUI.Hide();
+        if (TooltipManager.Instance != null) TooltipManager.Instance.Hide();
         if (contextMenuUI != null) contextMenuUI.Close();
         if (pickedItemUI != null) pickedItemUI.SetEmpty();
 
@@ -108,7 +110,6 @@ public class InventoryUI : MonoBehaviour
     void Update()
     {
         UpdatePickedItemUI();
-        UpdateTooltipUI();
     }
 
     void Initialize()
@@ -128,34 +129,48 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void TestAddItems()
-    {
-        slotDatas[0].item = potion;
-        slotDatas[0].amount = 1;
-
-        slotDatas[1].item = sword;
-        slotDatas[1].amount = 1;
-
-        slotDatas[2].item = apple;
-        slotDatas[2].amount = 5;
-
-        slotDatas[3].item = meat;
-        slotDatas[3].amount = 62;
-
-        slotDatas[4].item = meat;
-        slotDatas[4].amount = 2;
-
-        slotDatas[5].item = meat;
-        slotDatas[5].amount = 7;
-
-        slotDatas[6].item = chestplate;
-        slotDatas[6].amount = 1;
-    }
-
     public int AddItem(ItemData item, int amount)
     {
-        // TODO: 구현부 추가
-        return 0;
+        int remaining = amount;
+
+        if (item.maxStack > 1)
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i] is InventorySlotUI && slotDatas[i].item == item)
+                {
+                    int canAdd = item.maxStack - slotDatas[i].amount;
+                    if (canAdd <= 0) continue;
+                    int addAmount = Mathf.Min(canAdd, remaining);
+
+                    slotDatas[i].amount += addAmount;
+                    remaining -= addAmount;
+
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+
+        if (remaining > 0)
+        {
+            for (int i = 0; i < slotDatas.Length; i++)
+            {
+                if (slots[i] is InventorySlotUI && slotDatas[i].IsEmpty())
+                {
+                    int addAmount = Mathf.Min(remaining, item.maxStack);
+
+                    slotDatas[i].item = item;
+                    slotDatas[i].amount = addAmount;
+
+                    remaining -= addAmount;
+
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+
+        RefreshAllSlots();
+        return remaining;   // 0 : 다 들어감, 숫자 : 남음.
     }
 
     private void EquipItem(int index)
@@ -239,7 +254,7 @@ public class InventoryUI : MonoBehaviour
                 clickedSlot.Clear();
                 hasPickedItem = true;
 
-                tooltipUI.Hide();
+                TooltipManager.Instance.Hide();
             }
         }
         else
@@ -308,7 +323,7 @@ public class InventoryUI : MonoBehaviour
         InventorySlotData slot = slotDatas[index];
         if (slot.IsEmpty()) return;
 
-        tooltipUI.Hide();
+        TooltipManager.Instance.Hide();
         contextMenuUI.Open(index, slot.item, Mouse.current.position.ReadValue(), this);
     }
 
@@ -316,7 +331,7 @@ public class InventoryUI : MonoBehaviour
     {
         if (hasPickedItem || contextMenuUI.gameObject.activeSelf)
         {
-            tooltipUI.Hide();
+            TooltipManager.Instance.Hide();
             return;
         }
 
@@ -324,17 +339,16 @@ public class InventoryUI : MonoBehaviour
 
         if (hoveredSlot.IsEmpty())
         {
-            tooltipUI.Hide();
+            TooltipManager.Instance.Hide();
             return;
         }
 
-        tooltipUI.Show(hoveredSlot.item);
-        tooltipUI.FollowMouse();
+        TooltipManager.Instance.Show(hoveredSlot.item);
     }
 
     public void OnExitSlot(int index)
     {
-        tooltipUI.Hide();
+        TooltipManager.Instance.Hide();
     }
 
     public void HandleAction(int index)
@@ -353,7 +367,7 @@ public class InventoryUI : MonoBehaviour
         if (slot.amount <= 0)
         {
             slot.Clear();
-            tooltipUI.Hide(); // 아이템이 사라졌으니 툴팁도 끔
+            TooltipManager.Instance.Hide(); // 아이템이 사라졌으니 툴팁도 끔
         }
 
         RefreshAllSlots();
@@ -386,14 +400,6 @@ public class InventoryUI : MonoBehaviour
         else
         {
             pickedItemUI.SetEmpty();
-        }
-    }
-
-    void UpdateTooltipUI()
-    {
-        if (tooltipUI.gameObject.activeInHierarchy)
-        {
-            tooltipUI.FollowMouse();
         }
     }
 }
