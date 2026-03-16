@@ -6,6 +6,8 @@ public class ContextMenuManager : MonoBehaviour
     public static ContextMenuManager Instance { get; private set; }
     [SerializeField] private ContextMenuUI contextMenuUI;
 
+    public bool IsVisible => contextMenuUI != null && contextMenuUI.gameObject.activeSelf;
+
     void Awake()
     {
         if (Instance == null) Instance = this;

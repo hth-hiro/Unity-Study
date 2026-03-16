@@ -20,7 +20,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     private InventorySlotData[] slotDatas;
 
     private InventorySlotData pickedSlot = new InventorySlotData();
-    private bool hasPickedItem = false;
+    private bool hasPickedItem => pickedSlot != null && !pickedSlot.IsEmpty();
     private int pickedSlotIndex = -1;
 
     void Awake()
@@ -101,7 +101,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         }
 
         pickedSlot.Clear();
-        hasPickedItem = false;
+        //hasPickedItem = false;
         pickedSlotIndex = -1;
         RefreshAllSlots();
     }
@@ -131,6 +131,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     public int AddItem(ItemData item, int amount)
     {
         int remaining = amount;
+        if (item == null) return remaining;
 
         if (item.maxStack > 1)
         {
@@ -250,7 +251,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
                 pickedSlotIndex = index;
 
                 clickedSlot.Clear();
-                hasPickedItem = true;
+                //hasPickedItem = true;
 
                 TooltipManager.Instance.Hide();
             }
@@ -264,7 +265,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
                 clickedSlot.amount = pickedSlot.amount;
 
                 pickedSlot.Clear();
-                hasPickedItem = false;
+                //hasPickedItem = false;
                 pickedSlotIndex = -1;
             }
             else
@@ -279,7 +280,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
                     {
                         clickedSlot.amount = totalAmount;
                         pickedSlot.Clear();
-                        hasPickedItem = false;
+                        //hasPickedItem = false;
                         pickedSlotIndex = -1;
                     }
                     else
@@ -300,7 +301,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
                     pickedSlot.item = tempItem;
                     pickedSlot.amount = tempAmount;
 
-                    hasPickedItem = true;
+                    //hasPickedItem = true;
                     pickedSlotIndex = index;
                 }
             }
@@ -327,7 +328,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public void OnHoverSlot(int index)
     {
-        if (hasPickedItem || ContextMenuManager.Instance.gameObject.activeSelf)
+        if (hasPickedItem || ContextMenuManager.Instance.IsVisible)
         {
             TooltipManager.Instance.Hide();
             return;
@@ -381,7 +382,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
         pickedSlot.item = slot.item;
         pickedSlot.amount = splitAmount;
-        hasPickedItem = true;
+        //hasPickedItem = true;
 
         slot.amount = originAmount - splitAmount;
 

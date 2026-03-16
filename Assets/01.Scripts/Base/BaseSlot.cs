@@ -18,7 +18,7 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     protected ISlotHandler owner;
     protected int index;
 
-    public bool IsEmpty => currentItem == null;
+    public bool IsEmpty() => currentItem == null;
 
     public virtual void SetItem(ItemData item, int amount)
     {
