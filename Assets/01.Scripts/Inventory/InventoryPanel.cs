@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,7 +18,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     [SerializeField] private PickedItemUI pickedItemUI;
 
-    private InventorySlotData[] slotDatas;
+    public ItemContainer container;
 
     private InventorySlotData pickedSlot = new InventorySlotData();
     private bool hasPickedItem => pickedSlot != null && !pickedSlot.IsEmpty();
@@ -32,9 +33,9 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     void Start()
     {
         slots = GetComponentsInChildren<BaseSlot>();
+        container = new ItemContainer(slots.Length);
 
         Initialize();
-        InitializeSlotUIs();
 
         AddItem(meat, 70);
         AddItem(sword, 1);
@@ -49,59 +50,16 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         if (ContextMenuManager.Instance != null) ContextMenuManager.Instance.Close();
         if (pickedItemUI != null) pickedItemUI.SetEmpty();
 
-        if (slots == null || slotDatas == null) return;
-
-        if (hasPickedItem && !pickedSlot.IsEmpty())
+        if (hasPickedItem)
         {
-            for (int i = 0; i < slotDatas.Length; i++)
-            {
-                if (!slotDatas[i].IsEmpty() && slotDatas[i].item == pickedSlot.item)
-                {
-                    int maxStack = slotDatas[i].item.maxStack;
-                    int canAdd = maxStack - slotDatas[i].amount;
-
-                    if (canAdd > 0)
-                    {
-                        int addAmount = Mathf.Min(canAdd, pickedSlot.amount);
-                        slotDatas[i].amount += addAmount;
-                        pickedSlot.amount -= addAmount;
-
-                        if (pickedSlot.IsEmpty()) break;
-                    }
-                }
-            }
-
-            if (!pickedSlot.IsEmpty())
-            {
-                if (pickedSlotIndex != -1 && slotDatas[pickedSlotIndex].IsEmpty())
-                {
-                    slotDatas[pickedSlotIndex].item = pickedSlot.item;
-                    slotDatas[pickedSlotIndex].amount = pickedSlot.amount;
-                    pickedSlot.Clear();
-                }
-                else
-                {
-                    for (int i = 0; i < slotDatas.Length; i++)
-                    {
-                        if (slotDatas[i].IsEmpty())
-                        {
-                            slotDatas[i].item = pickedSlot.item;
-                            slotDatas[i].amount = pickedSlot.amount;
-                            pickedSlot.Clear();
-                            break;
-                        }
-                    }
-                }
-            }
-
+            int remaining = container.AddItem(pickedSlot.item, pickedSlot.amount);
+            pickedSlot.Clear();
             if (!pickedSlot.IsEmpty())
             {
                 // TODO : 아이템 생성로직
             }
         }
 
-        pickedSlot.Clear();
-        //hasPickedItem = false;
         pickedSlotIndex = -1;
         RefreshAllSlots();
     }
@@ -113,15 +71,6 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     void Initialize()
     {
-        slotDatas = new InventorySlotData[slots.Length];
-        for (int i = 0; i < slots.Length; i++)
-        {
-            slotDatas[i]  = new InventorySlotData();
-        }
-    }
-
-    void InitializeSlotUIs()
-    {
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].Initialize(this, i);
@@ -130,52 +79,14 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public int AddItem(ItemData item, int amount)
     {
-        int remaining = amount;
-        if (item == null) return remaining;
-
-        if (item.maxStack > 1)
-        {
-            for (int i = 0; i < slots.Length; i++)
-            {
-                if (slots[i] is InventorySlotUI && slotDatas[i].item == item)
-                {
-                    int canAdd = item.maxStack - slotDatas[i].amount;
-                    if (canAdd <= 0) continue;
-                    int addAmount = Mathf.Min(canAdd, remaining);
-
-                    slotDatas[i].amount += addAmount;
-                    remaining -= addAmount;
-
-                    if (remaining <= 0) break;
-                }
-            }
-        }
-
-        if (remaining > 0)
-        {
-            for (int i = 0; i < slotDatas.Length; i++)
-            {
-                if (slots[i] is InventorySlotUI && slotDatas[i].IsEmpty())
-                {
-                    int addAmount = Mathf.Min(remaining, item.maxStack);
-
-                    slotDatas[i].item = item;
-                    slotDatas[i].amount = addAmount;
-
-                    remaining -= addAmount;
-
-                    if (remaining <= 0) break;
-                }
-            }
-        }
-
+        int remaining = container.AddItem(item, amount);
         RefreshAllSlots();
         return remaining;   // 0 : 다 들어감, 숫자 : 남음.
     }
 
     private void EquipItem(int index)
     {
-        ItemData itemToEquip = slotDatas[index].item;
+        ItemData itemToEquip = container.slotDatas[index].item;
 
         for (int i = 0; i < slots.Length; i++)
         {
@@ -190,18 +101,9 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         }
     }
 
-    private void SwapItems(int index, int i)
+    private void SwapItems(int indexA, int indexB)
     {
-        InventorySlotData temp = new InventorySlotData();
-        temp.item = slotDatas[index].item;
-        temp.amount = slotDatas[index].amount;
-
-        slotDatas[index].item = slotDatas[i].item;
-        slotDatas[index].amount = slotDatas[i].amount;
-
-        slotDatas[i].item = temp.item;
-        slotDatas[i].amount = temp.amount;
-
+        container.Swap(indexA, indexB);
         RefreshAllSlots();
     }
 
@@ -209,16 +111,16 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slotDatas[i].IsEmpty())
+            if (container.slotDatas[i].IsEmpty())
                 slots[i].SetEmpty();
             else
-                slots[i].SetItem(slotDatas[i].item, slotDatas[i].amount);
+                slots[i].SetItem(container.slotDatas[i].item, container.slotDatas[i].amount);
         }
     }
 
     public int GetAmount(int index)
     {
-        return slotDatas[index].amount;
+        return container.slotDatas[index].amount;
     }
 
     public void OnClickSlot(int index)
@@ -226,7 +128,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         ContextMenuManager.Instance.Close();
         Debug.Log($"{index}번 슬롯 클릭됨!");
 
-        InventorySlotData clickedSlot = slotDatas[index];
+        InventorySlotData clickedSlot = container.slotDatas[index];
         BaseSlot targetSlotUI = slots[index];
 
         if (hasPickedItem)
@@ -319,7 +221,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     {
         if (hasPickedItem) return;
 
-        InventorySlotData slot = slotDatas[index];
+        InventorySlotData slot = container.slotDatas[index];
         if (slot.IsEmpty()) return;
 
         TooltipManager.Instance.Hide();
@@ -334,7 +236,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
             return;
         }
 
-        InventorySlotData hoveredSlot = slotDatas[index];
+        InventorySlotData hoveredSlot = container.slotDatas[index];
 
         if (hoveredSlot.IsEmpty())
         {
@@ -352,7 +254,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public void HandleAction(int index)
     {
-        InventorySlotData slot = slotDatas[index];
+        InventorySlotData slot = container.slotDatas[index];
         if (slot.IsEmpty()) return;
 
         if (slot.item.itemType == ItemType.Equipment)
@@ -374,11 +276,11 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public void HandleSplit(int index)
     {
-        InventorySlotData slot = slotDatas[index];
+        InventorySlotData slot = container.slotDatas[index];
         if (slot.amount <= 1) return;
 
-        int originAmount = slotDatas[index].amount;
-        int splitAmount = slotDatas[index].amount / 2;
+        int originAmount = container.slotDatas[index].amount;
+        int splitAmount = container.slotDatas[index].amount / 2;
 
         pickedSlot.item = slot.item;
         pickedSlot.amount = splitAmount;

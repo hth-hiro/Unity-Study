@@ -5,12 +5,13 @@ public class ShopPanel : MonoBehaviour, ISlotHandler
     [SerializeField] private BaseSlot[] slots;
     [SerializeField] private ItemData[] shopItems;
 
+    public ItemContainer shopContainer;
+
     void Start()
     {
-        
+        slots = GetComponentsInChildren<BaseSlot>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         
