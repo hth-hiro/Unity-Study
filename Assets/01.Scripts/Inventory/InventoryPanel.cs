@@ -20,7 +20,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public ItemContainer container;
 
-    private InventorySlotData pickedSlot = new InventorySlotData();
+    private ItemStack pickedSlot = new ItemStack();
     private bool hasPickedItem => pickedSlot != null && !pickedSlot.IsEmpty();
     private int pickedSlotIndex = -1;
 
@@ -28,14 +28,14 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        slots = GetComponentsInChildren<BaseSlot>();
+        container = new ItemContainer(slots.Length);
     }
 
     void Start()
     {
-        slots = GetComponentsInChildren<BaseSlot>();
-        container = new ItemContainer(slots.Length);
-
-        Initialize();
+        InitializeSlotUIs();
 
         AddItem(meat, 70);
         AddItem(sword, 1);
@@ -69,7 +69,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         UpdatePickedItemUI();
     }
 
-    void Initialize()
+    void InitializeSlotUIs()
     {
         for (int i = 0; i < slots.Length; i++)
         {
@@ -128,7 +128,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
         ContextMenuManager.Instance.Close();
         Debug.Log($"{index}¹ø ½½·Ô Å¬¸¯µÊ!");
 
-        InventorySlotData clickedSlot = container.slotDatas[index];
+        ItemStack clickedSlot = container.slotDatas[index];
         BaseSlot targetSlotUI = slots[index];
 
         if (hasPickedItem)
@@ -221,7 +221,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
     {
         if (hasPickedItem) return;
 
-        InventorySlotData slot = container.slotDatas[index];
+        ItemStack slot = container.slotDatas[index];
         if (slot.IsEmpty()) return;
 
         TooltipManager.Instance.Hide();
@@ -236,7 +236,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
             return;
         }
 
-        InventorySlotData hoveredSlot = container.slotDatas[index];
+        ItemStack hoveredSlot = container.slotDatas[index];
 
         if (hoveredSlot.IsEmpty())
         {
@@ -254,7 +254,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public void HandleAction(int index)
     {
-        InventorySlotData slot = container.slotDatas[index];
+        ItemStack slot = container.slotDatas[index];
         if (slot.IsEmpty()) return;
 
         if (slot.item.itemType == ItemType.Equipment)
@@ -276,7 +276,7 @@ public class InventoryPanel : MonoBehaviour, ISlotHandler
 
     public void HandleSplit(int index)
     {
-        InventorySlotData slot = container.slotDatas[index];
+        ItemStack slot = container.slotDatas[index];
         if (slot.amount <= 1) return;
 
         int originAmount = container.slotDatas[index].amount;

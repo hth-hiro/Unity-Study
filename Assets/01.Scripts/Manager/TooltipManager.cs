@@ -8,15 +8,8 @@ public class TooltipManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }    
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     public void Show(ItemData item)
@@ -38,6 +31,11 @@ public class TooltipManager : MonoBehaviour
 
     void Update()
     {
-        tooltipUI.FollowMouse();
+        var cg = tooltipUI.GetComponent<CanvasGroup>();
+
+        if (cg != null && cg.alpha > 0)
+        {
+            tooltipUI.FollowMouse();
+        }
     }
 }

@@ -6,15 +6,15 @@ using UnityEngine.Rendering;
 [System.Serializable]
 public class ItemContainer
 {
-    public InventorySlotData[] slotDatas;
+    public ItemStack[] slotDatas;
 
     public ItemContainer(int size)
     {
-        slotDatas = new InventorySlotData[size];
+        slotDatas = new ItemStack[size];
 
         for (int i = 0; i < size; i++)
         {
-            slotDatas[i] = new InventorySlotData();
+            slotDatas[i] = new ItemStack();
         }
     }
 
@@ -74,7 +74,7 @@ public class ItemContainer
             return;
         }
 
-        InventorySlotData temp = new InventorySlotData();
+        ItemStack temp = new ItemStack();
         temp.item = slotDatas[indexA].item;
         temp.amount = slotDatas[indexA].amount;
 

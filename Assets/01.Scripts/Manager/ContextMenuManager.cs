@@ -6,7 +6,7 @@ public class ContextMenuManager : MonoBehaviour
     public static ContextMenuManager Instance { get; private set; }
     [SerializeField] private ContextMenuUI contextMenuUI;
 
-    public bool IsVisible => contextMenuUI != null && contextMenuUI.gameObject.activeSelf;
+    public bool IsVisible => contextMenuUI != null && contextMenuUI.GetComponent<CanvasGroup>().alpha > 0.1f;
 
     void Awake()
     {
@@ -32,6 +32,8 @@ public class ContextMenuManager : MonoBehaviour
 
     public bool IsActive()
     {
-        return contextMenuUI != null && contextMenuUI.gameObject.activeSelf;
+        if (contextMenuUI == null) return false;
+        var cg = contextMenuUI.GetComponent<CanvasGroup>();
+        return cg != null && cg.alpha > 0.1f;
     }
 }

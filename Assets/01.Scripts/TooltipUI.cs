@@ -23,7 +23,6 @@ public class TooltipUI : MonoBehaviour
         var cg = GetComponent<CanvasGroup>();
         cg.alpha = 1;
 
-        gameObject.SetActive(true);
         itemNameText.text = item.itemName;
         descriptionText.text = item.description;
 
@@ -34,8 +33,6 @@ public class TooltipUI : MonoBehaviour
     {
         var cg = GetComponent<CanvasGroup>();
         cg.alpha = 0;
-
-        gameObject.SetActive(false);
     }
 
     public void FollowMouse()
