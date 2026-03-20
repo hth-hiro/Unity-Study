@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.LowLevelPhysics2D;
 
 public class HUDManager : MonoBehaviour
 {
@@ -8,11 +9,17 @@ public class HUDManager : MonoBehaviour
 
     void Awake()
     {
-        
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        RefreshHUD();
     }
 
     public void RefreshHUD()
     {
-
+        m_playerHUD?.Refresh();
     }
 }

@@ -11,16 +11,19 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_inputDirection;
 
     private bool m_isInputBlocked = false;
-    private bool m_isShopOpened = false;
 
     [SerializeField] private GameObject m_shop;
 
     [SerializeField] private float moveSpeed = 5f;
 
     [Header("Input Actions")]
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private InputActionReference toggleInventoryAction;
-    [SerializeField] private InputActionReference toggleShopAction;
+    [SerializeField] private InputActionReference m_moveAction;
+    [SerializeField] private InputActionReference m_toggleInventoryAction;
+    [SerializeField] private InputActionReference m_toggleShopAction;
+
+    [Header("Skill Inputs")]
+    [SerializeField] private InputActionReference m_skillEAction;
+    [SerializeField] private InputActionReference m_skillShiftAction;
 
     void Awake()
     {
@@ -50,23 +53,35 @@ public class PlayerController : MonoBehaviour
     // 이벤트 등록
     void OnEnable()
     {
-        moveAction.action.Enable();
-        toggleInventoryAction.action.Enable();
-        toggleShopAction.action.Enable();
+        m_moveAction.action.Enable();
 
-        toggleInventoryAction.action.performed += OnToggleInventory;
-        toggleShopAction.action.performed += OnToggleShop;
+        m_skillEAction.action.Enable();
+        m_skillShiftAction.action.Enable();
+
+        m_skillEAction.action.performed += OnSkillE;
+        m_skillShiftAction.action.performed += OnSkillShift;
+
+        m_toggleInventoryAction.action.Enable();
+        m_toggleInventoryAction.action.performed += OnToggleInventory;
+
+        m_toggleShopAction.action.Enable();
+        m_toggleShopAction.action.performed += OnToggleShop;
+
     }
 
     // 이벤트 제거 (중복 방지)
     void OnDisable()
     {
-        toggleInventoryAction.action.performed -= OnToggleInventory;
-        toggleShopAction.action.performed -= OnToggleShop;
+        m_toggleInventoryAction.action.performed -= OnToggleInventory;
+        m_toggleShopAction.action.performed -= OnToggleShop;
+        m_skillEAction.action.performed -= OnSkillE;
+        m_skillShiftAction.action.performed -= OnSkillShift;
 
-        moveAction.action.Disable();
-        toggleInventoryAction.action.Disable();
-        toggleShopAction.action.Disable();
+        m_moveAction.action.Disable();
+        m_toggleInventoryAction.action.Disable();
+        m_toggleShopAction.action.Disable();
+        m_skillEAction.action.Disable();
+        m_skillShiftAction.action.Disable();
     }
 
     void Start()
@@ -76,7 +91,6 @@ public class PlayerController : MonoBehaviour
         if (m_shop != null)
         {
             m_shop.SetActive(false);
-            m_isShopOpened = false;
         }
     }
 
@@ -88,7 +102,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector3 moveInput = moveAction.action.ReadValue<Vector2>();
+        Vector3 moveInput = m_moveAction.action.ReadValue<Vector2>();
 
         m_inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
     }
@@ -105,7 +119,22 @@ public class PlayerController : MonoBehaviour
 
     void OnToggleShop(InputAction.CallbackContext ctx)
     {
-        m_isShopOpened = !m_isShopOpened;
-        m_shop.SetActive(m_isShopOpened);
+        ShopManager.Instance?.OnToggleShop(ctx);
+    }
+
+    public void OnSkillE(InputAction.CallbackContext ctx)
+    {
+        if (m_isInputBlocked) return;
+        if (!ctx.performed) return;
+
+        SkillManager.Instance?.UseSkill(0);
+    }
+
+    public void OnSkillShift(InputAction.CallbackContext ctx)
+    {
+        if (m_isInputBlocked) return;
+        if (!ctx.performed) return;
+
+        SkillManager.Instance?.UseSkill(1);
     }
 }

@@ -1,11 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SkillManager : MonoBehaviour
 {
     public static SkillManager Instance { get; private set; }
 
-    public float Skill1CoolDown = 5f;
-    public float Skill1Remain { get; private set; }
+    public List<SkillData> Skills = new List<SkillData>();
 
     private void Awake()
     {
@@ -15,19 +15,34 @@ public class SkillManager : MonoBehaviour
 
     void Update()
     {
-        if (Skill1Remain > 0f)
-        {
-            Skill1Remain -= Time.deltaTime;
-            if (Skill1Remain < 0f) Skill1Remain = 0f;
+        bool isAnySkillCooling = false;
 
+        foreach (var skill in Skills)
+        {
+            skill.UpdateCooldown(Time.deltaTime);
+            isAnySkillCooling = true;
+        }
+
+        if (isAnySkillCooling)
+        {
             HUDManager.Instance?.RefreshHUD();
         }
     }
 
-    public void UseSkill1()
+    public void UseSkill(int index)
     {
-        if (Skill1Remain > 0f) return;
-        Skill1Remain = Skill1CoolDown;
+        if (index < 0 || index >= Skills.Count) return;
+
+        SkillData skill = Skills[index];
+
+        if (skill.IsReady)
+        {
+            skill.Remain = skill.CoolDown;
+            Debug.Log($"{skill.Name} !");
+
+            // 대미지, 이펙트 실행
+        }
+
         HUDManager.Instance?.RefreshHUD();
     }
 }

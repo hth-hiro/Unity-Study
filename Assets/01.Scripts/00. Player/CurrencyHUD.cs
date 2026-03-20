@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CurrencyHUD : MonoBehaviour
 {
-    private TextMeshProUGUI m_goldText;
+    [SerializeField] private TextMeshProUGUI m_goldText;
 
     void Start()
     {

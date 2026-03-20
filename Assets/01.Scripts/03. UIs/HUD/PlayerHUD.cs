@@ -4,7 +4,7 @@ public class PlayerHUD : MonoBehaviour
 {
     [SerializeField] private HealthBarUI m_healthBarUI;
     [SerializeField] private AmmoUI m_ammoUI;
-    [SerializeField] private SkillCooldownUI[] m_skillUIs;
+    [SerializeField] private SkillCooldownUI[] m_skillUI;
     // 수집품
     // 보스 체력
 
@@ -23,12 +23,21 @@ public class PlayerHUD : MonoBehaviour
                 );
         }
 
-        if (SkillManager.Instance != null && m_skillUIs.Length > 0)
+        if (SkillManager.Instance != null && m_skillUI.Length > 0)
         {
-            m_skillUIs[0]?.SetCooldown(
-                SkillManager.Instance.Skill1Remain,
-                SkillManager.Instance.Skill1CoolDown
-                );
+            for (int i = 0; i < m_skillUI.Length; i++) 
+            {
+                if (i < SkillManager.Instance.Skills.Count)
+                {
+                    var skillData = SkillManager.Instance.Skills[i];
+
+                    m_skillUI[i].SetCooldown(skillData.Remain, skillData.CoolDown);
+                }
+                else
+                {
+                    m_skillUI[i].SetCooldown(0, 1);
+                }
+            }
         }
     }
 }

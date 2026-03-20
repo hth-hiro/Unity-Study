@@ -3,7 +3,7 @@ using TMPro;
 
 public class AmmoUI : MonoBehaviour
 {
-    private TextMeshProUGUI m_ammoText;
+    [SerializeField] private TextMeshProUGUI m_ammoText;
 
     public void SetValue(int current, int max)
     {
