@@ -12,9 +12,14 @@ public class PlayerController : MonoBehaviour
 
     private bool m_isInputBlocked = false;
 
-    [SerializeField] private GameObject m_shop;
-
     [SerializeField] private float moveSpeed = 5f;
+
+    [Header("FPS Look Settings")]
+    [SerializeField] private InputActionReference m_lookAction;
+    [SerializeField] private Transform m_cameraTransform;
+    [SerializeField] private float m_mouseSensitivity = 0.1f;
+
+    private float m_xRotation = 0f;
 
     [Header("Input Actions")]
     [SerializeField] private InputActionReference m_moveAction;
@@ -47,6 +52,14 @@ public class PlayerController : MonoBehaviour
         if (isBlock)
         {
             m_inputDirection = Vector3.zero;
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
@@ -54,6 +67,7 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         m_moveAction.action.Enable();
+        m_lookAction.action.Enable();
 
         m_skillEAction.action.Enable();
         m_skillShiftAction.action.Enable();
@@ -67,6 +81,8 @@ public class PlayerController : MonoBehaviour
         m_toggleShopAction.action.Enable();
         m_toggleShopAction.action.performed += OnToggleShop;
 
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // 이벤트 제거 (중복 방지)
@@ -78,6 +94,8 @@ public class PlayerController : MonoBehaviour
         m_skillShiftAction.action.performed -= OnSkillShift;
 
         m_moveAction.action.Disable();
+        m_lookAction.action.Disable();
+
         m_toggleInventoryAction.action.Disable();
         m_toggleShopAction.action.Disable();
         m_skillEAction.action.Disable();
@@ -87,11 +105,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         InventoryUI.Instance?.gameObject.SetActive(false);
-
-        if (m_shop != null)
-        {
-            m_shop.SetActive(false);
-        }
+        ShopUI.Instance?.gameObject.SetActive(false);
     }
 
     void Update()
@@ -105,11 +119,24 @@ public class PlayerController : MonoBehaviour
         Vector3 moveInput = m_moveAction.action.ReadValue<Vector2>();
 
         m_inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
+
+        Vector2 lookInput = m_lookAction.action.ReadValue<Vector2>();
+
+        float mouseX = lookInput.x * m_mouseSensitivity;
+        float mouseY = lookInput.y * m_mouseSensitivity;
+
+        m_xRotation -= mouseY;
+        m_xRotation = Mathf.Clamp(m_xRotation, -90f, 90f);
+
+        m_cameraTransform.localRotation = Quaternion.Euler(m_xRotation, 0f, 0f);
+        transform.Rotate(Vector3.up * mouseX);
     }
 
     void FixedUpdate()
     {
-        m_playerRB.linearVelocity = new Vector3(m_inputDirection.x * moveSpeed, m_playerRB.linearVelocity.y, m_inputDirection.z * moveSpeed);
+        Vector3 moveDir = transform.TransformDirection(m_inputDirection);
+
+        m_playerRB.linearVelocity = new Vector3(moveDir.x * moveSpeed, m_playerRB.linearVelocity.y, moveDir.z * moveSpeed);
     }
 
     void OnToggleInventory(InputAction.CallbackContext ctx)

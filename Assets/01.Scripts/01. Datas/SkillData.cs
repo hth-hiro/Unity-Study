@@ -2,12 +2,13 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [System.Serializable]
-public class SkillData
+public abstract class SkillData : ScriptableObject
 {
     public string Name;
     public float CoolDown;
-    public float Remain;
     public Sprite Icon;
+
+    [System.NonSerialized] public float Remain;
 
     public bool IsReady => Remain <= 0;
 
@@ -20,10 +21,5 @@ public class SkillData
         }
     }
 
-    public void Use()
-    {
-        Remain = CoolDown;
-
-        // SkillLogic
-    }
+    public abstract void Use(GameObject caster);
 }

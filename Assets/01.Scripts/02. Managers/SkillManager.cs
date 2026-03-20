@@ -40,7 +40,7 @@ public class SkillManager : MonoBehaviour
             skill.Remain = skill.CoolDown;
             Debug.Log($"{skill.Name} !");
 
-            // 대미지, 이펙트 실행
+            skill.Use(PlayerController.Instance.gameObject);
         }
 
         HUDManager.Instance?.RefreshHUD();
