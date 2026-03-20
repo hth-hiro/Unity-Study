@@ -11,13 +11,15 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_inputDirection;
 
     private bool m_isInputBlocked = false;
+    private bool m_isGrounded;
 
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float m_moveSpeed = 10f;
+    [SerializeField] private float m_jumpForce = 5f;
 
     [Header("FPS Look Settings")]
     [SerializeField] private InputActionReference m_lookAction;
     [SerializeField] private Transform m_cameraTransform;
-    [SerializeField] private float m_mouseSensitivity = 0.1f;
+    [SerializeField] private float m_mouseSensitivity = 0.2f;
 
     private float m_xRotation = 0f;
 
@@ -25,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionReference m_moveAction;
     [SerializeField] private InputActionReference m_toggleInventoryAction;
     [SerializeField] private InputActionReference m_toggleShopAction;
+    [SerializeField] private InputActionReference m_jumpAction;
 
     [Header("Skill Inputs")]
     [SerializeField] private InputActionReference m_skillEAction;
@@ -67,7 +70,10 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         m_moveAction.action.Enable();
+        m_jumpAction.action.Enable();
         m_lookAction.action.Enable();
+
+        m_jumpAction.action.performed += OnJump;
 
         m_skillEAction.action.Enable();
         m_skillShiftAction.action.Enable();
@@ -93,7 +99,10 @@ public class PlayerController : MonoBehaviour
         m_skillEAction.action.performed -= OnSkillE;
         m_skillShiftAction.action.performed -= OnSkillShift;
 
+        m_jumpAction.action.performed -= OnJump;
+
         m_moveAction.action.Disable();
+        m_jumpAction.action.Disable();
         m_lookAction.action.Disable();
 
         m_toggleInventoryAction.action.Disable();
@@ -136,7 +145,33 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 moveDir = transform.TransformDirection(m_inputDirection);
 
-        m_playerRB.linearVelocity = new Vector3(moveDir.x * moveSpeed, m_playerRB.linearVelocity.y, moveDir.z * moveSpeed);
+        m_playerRB.linearVelocity = new Vector3(moveDir.x * m_moveSpeed, m_playerRB.linearVelocity.y, moveDir.z * m_moveSpeed);
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.7f)
+            {
+                m_isGrounded = true;
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        m_isGrounded = false;
+    }
+
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (m_isInputBlocked) return;
+
+        if (m_isGrounded)
+        {
+            m_playerRB.AddForce(Vector3.up * m_jumpForce, ForceMode.VelocityChange);
+        }
     }
 
     void OnToggleInventory(InputAction.CallbackContext ctx)
