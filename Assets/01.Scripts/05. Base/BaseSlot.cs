@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -19,6 +18,9 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     protected int index;
 
     public bool IsEmpty() => currentItem == null;
+
+    protected bool isHovered;
+    protected bool isSelected;
 
     public virtual void SetItem(ItemData item, int amount)
     {
@@ -62,6 +64,8 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     // 모든 슬롯 공통 클릭 처리
     public virtual void OnPointerClick(PointerEventData eventData)
     {
+        if (owner == null) return;
+
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             owner.OnClickSlot(index);
@@ -75,11 +79,18 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     // 모든 슬롯 공통 호버 처리
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
-        owner.OnHoverSlot(index);
+        isHovered = true;
+        owner?.OnHoverSlot(index);
     }
 
     public virtual void OnPointerExit(PointerEventData eventData)
     {
-        owner.OnExitSlot(index);
+        isHovered = false;
+        owner?.OnExitSlot(index);
+    }
+
+    public void SetSelected(bool selected)
+    {
+        isSelected = selected;
     }
 }

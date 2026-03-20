@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class InventorySlotUI : BaseSlot
+public class InventorySlot : BaseSlot
 {
     public override void Initialize(ISlotHandler handler, int slotIndex)
     {

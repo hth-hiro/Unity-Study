@@ -18,6 +18,7 @@ public class PickedItemUI : MonoBehaviour
 
     public void SetEmpty()
     {
+        if (this == null || gameObject == null) return;
         gameObject.SetActive(false);
     }
 

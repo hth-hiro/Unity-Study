@@ -5,13 +5,14 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
+
     private Rigidbody m_playerRB;
     private Vector3 m_inputDirection;
 
-    private bool m_isInventoryOpened = false;
+    private bool m_isInputBlocked = false;
     private bool m_isShopOpened = false;
 
-    [SerializeField] private GameObject m_inventory;
     [SerializeField] private GameObject m_shop;
 
     [SerializeField] private float moveSpeed = 5f;
@@ -23,7 +24,27 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        m_playerRB = GameObject.Find("Player").GetComponent<Rigidbody>();
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        m_playerRB = GetComponent<Rigidbody>();
+    }
+
+    public void SetInputBlock(bool isBlock)
+    {
+        m_isInputBlocked = isBlock;
+
+        if (isBlock)
+        {
+            m_inputDirection = Vector3.zero;
+        }
     }
 
     // 이벤트 등록
@@ -50,11 +71,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if (m_inventory != null)
-        {
-            m_inventory.SetActive(false);
-            m_isInventoryOpened = false;
-        }
+        InventoryUI.Instance?.gameObject.SetActive(false);
 
         if (m_shop != null)
         {
@@ -65,12 +82,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Vector2 moveInput = moveAction.action.ReadValue<Vector2>();
-
-        if (!m_isInventoryOpened)
-            m_inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
-        else
+        if (m_isInputBlocked)
+        {
             m_inputDirection = Vector3.zero;
+            return;
+        }
+
+        Vector3 moveInput = moveAction.action.ReadValue<Vector2>();
+
+        m_inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
     }
 
     void FixedUpdate()
@@ -80,8 +100,7 @@ public class PlayerController : MonoBehaviour
 
     void OnToggleInventory(InputAction.CallbackContext ctx)
     {
-        m_isInventoryOpened = !m_isInventoryOpened;
-        m_inventory.SetActive(m_isInventoryOpened);
+        InventoryManager.Instance?.OnToggleInventory(ctx);
     }
 
     void OnToggleShop(InputAction.CallbackContext ctx)

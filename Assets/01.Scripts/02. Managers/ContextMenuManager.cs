@@ -14,11 +14,11 @@ public class ContextMenuManager : MonoBehaviour
         else Destroy(gameObject);
     }
     
-    public void Open(int slotIndex, ItemData item, Vector2 position, InventoryPanel panel)
+    public void Open(int slotIndex, ItemData item, Vector2 position, ISlotHandler handler)
     {
         if (contextMenuUI != null)
         {
-            contextMenuUI.Open(slotIndex, item, position, panel);
+            contextMenuUI.Open(slotIndex, item, position, handler);
         }
     }
 
