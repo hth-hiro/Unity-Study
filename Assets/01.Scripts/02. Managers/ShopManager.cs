@@ -1,77 +1,77 @@
-//using UnityEngine;
-//using UnityEngine.InputSystem;
-//using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
-//public class ShopManager : MonoBehaviour
-//{
-//    public static ShopManager Instance { get; private set; }
+public class ShopManager : MonoBehaviour
+{
+    //public static ShopManager Instance { get; private set; }
 
-//    [SerializeField] private GameObject m_shopUI;
-//    private ShopData m_shopData;
+    [SerializeField] private GameObject m_shopUI;
+    //private ShopData m_shopData;
 
-//    void Awake()
-//    {
-//        if (Instance == null) Instance = this;
-//        else { Destroy(gameObject); return; }
+    //void Awake()
+    //{
+    //    if (Instance == null) Instance = this;
+    //    else { Destroy(gameObject); return; }
 
-//        m_shopData = new ShopData(9);
-//    }
-    
-//    public void OnToggleShop(InputAction.CallbackContext ctx)
-//    {
-//        if (!ctx.performed) return;
-//        if (m_shopUI == null) return;
+    //    m_shopData = new ShopData(9);
+    //}
 
-//        bool nextState = !m_shopUI.activeSelf;
-//        m_shopUI.SetActive(nextState);
+    //public void OnToggleShop(InputAction.CallbackContext ctx)
+    //{
+    //    if (!ctx.performed) return;
+    //    if (m_shopUI == null) return;
 
-//        PlayerController.Instance?.SetInputBlock(nextState);
+    //    bool nextState = !m_shopUI.activeSelf;
+    //    m_shopUI.SetActive(nextState);
 
-//        if (nextState)
-//        {
-//            ShopUI.Instance?.Refresh();
-//        }
-//    }
+    //    PlayerController.Instance?.SetInputBlock(nextState);
 
-//    public void ProcessPurchase(ItemData item, int amount)
-//    {
-//        if (item == null) return;
+    //    if (nextState)
+    //    {
+    //        ShopUI.Instance?.Refresh();
+    //    }
+    //}
 
-//        int totalPrice = item.buyPrice * amount;
+    //public void ProcessPurchase(ItemData item, int amount)
+    //{
+    //    if (item == null) return;
 
-//        if (!CurrencyManager.Instance.ConsumeGold(totalPrice))
-//        {
-//            Debug.Log("골드가 부족합니다.");
-//            ShopUI.Instance?.Refresh();
-//            return;
-//        }
+    //    int totalPrice = item.buyPrice * amount;
 
-//        int remaining = InventoryManager.Instance.AddItem(item, amount);
+    //    if (!CurrencyManager.Instance.ConsumeGold(totalPrice))
+    //    {
+    //        Debug.Log("골드가 부족합니다.");
+    //        ShopUI.Instance?.Refresh();
+    //        return;
+    //    }
 
-//        if (remaining == 0)
-//        {
-//            Debug.Log("구매 성공 !");
-//        }
-//        else
-//        {
-//            int refundPrice = remaining * item.buyPrice;
+    //    int remaining = InventoryManager.Instance.AddItem(item, amount);
 
-//            CurrencyManager.Instance.AddGold(refundPrice);
-//        }
+    //    if (remaining == 0)
+    //    {
+    //        Debug.Log("구매 성공 !");
+    //    }
+    //    else
+    //    {
+    //        int refundPrice = remaining * item.buyPrice;
 
-//        ShopUI.Instance?.Refresh();
-//        InventoryUI.Instance?.RequestRefresh();
-//    }
+    //        CurrencyManager.Instance.AddGold(refundPrice);
+    //    }
 
-//    public List<ItemStack> GetShopItems()
-//    {
-//        return new List<ItemStack>(m_shopData.Slots);
-//    }
-    
-//    public ItemStack GetShopItem(int index)
-//    {
-//        if (index < 0 || index >= m_shopData.Slots.Length) return null;
+    //    ShopUI.Instance?.Refresh();
+    //    InventoryUI.Instance?.RequestRefresh();
+    //}
 
-//        return m_shopData.Slots[index];
-//    }
-//}
+    //public List<ItemStack> GetShopItems()
+    //{
+    //    return new List<ItemStack>(m_shopData.Slots);
+    //}
+
+    //public ItemStack GetShopItem(int index)
+    //{
+    //    if (index < 0 || index >= m_shopData.Slots.Length) return null;
+
+    //    return m_shopData.Slots[index];
+    //}
+}

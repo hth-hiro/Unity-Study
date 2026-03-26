@@ -33,10 +33,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionReference m_skillEAction;
     [SerializeField] private InputActionReference m_skillShiftAction;
 
-    [Header("Test")]
-    [SerializeField] private GameObject m_shopUI;
-    private bool m_isShopOpen = false;
-
     void Awake()
     {
         if (Instance == null)
@@ -70,7 +66,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ¿Ã∫•∆Æ µÓ∑œ
+    // Ïù¥Î≤§Ìä∏ Îì±Î°ù
     void OnEnable()
     {
         m_moveAction.action.Enable();
@@ -95,7 +91,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
-    // ¿Ã∫•∆Æ ¡¶∞≈ (¡ﬂ∫π πÊ¡ˆ)
+    // Ïù¥Î≤§Ìä∏ Ï†úÍ±∞ (Ï§ëÎ≥µ Î∞©ÏßÄ)
     void OnDisable()
     {
         m_toggleInventoryAction.action.performed -= OnToggleInventory;
@@ -119,7 +115,6 @@ public class PlayerController : MonoBehaviour
     {
         //InventoryUI.Instance?.gameObject.SetActive(false);
         //ShopUI.Instance?.gameObject.SetActive(false);
-        m_shopUI.gameObject.SetActive(false);
     }
 
     void Update()
@@ -188,14 +183,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!ctx.performed) return;
 
-        m_isShopOpen = !m_isShopOpen;
-
-        if (m_shopUI != null)
-        {
-            m_shopUI.SetActive(m_isShopOpen);
-        }
-
-        SetInputBlock(m_isShopOpen);
+        UIManager.Instance?.ToggleShop();
     }
 
     public void OnSkillE(InputAction.CallbackContext ctx)
