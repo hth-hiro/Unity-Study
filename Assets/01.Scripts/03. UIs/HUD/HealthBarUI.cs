@@ -22,8 +22,6 @@ public class HealthBarUI : MonoBehaviour
     {
         float fill = max <= 0 ? 0 : current / max;
 
-        Debug.Log($"Fill = {fill}");
-
         if (m_runtimeMaterial != null)
         {
             m_runtimeMaterial.SetFloat("_FillAmount", fill);

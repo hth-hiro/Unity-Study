@@ -20,7 +20,7 @@ public class TestScript : MonoBehaviour
             m_currentHP -= 10f;
             m_currentHP = Mathf.Clamp(m_currentHP, 0, m_maxHP);
 
-            m_hpBar.SetValue(m_currentHP, m_maxHP);
+            PlayerStatusManager.Instance.SetHP(m_currentHP);
         }
 
         // J 키 누르면 체력 회복 (테스트용)
@@ -29,7 +29,7 @@ public class TestScript : MonoBehaviour
             m_currentHP += 10f;
             m_currentHP = Mathf.Clamp(m_currentHP, 0, m_maxHP);
 
-            m_hpBar.SetValue(m_currentHP, m_maxHP);
+            PlayerStatusManager.Instance.SetHP(m_currentHP);
         }
     }
 }
