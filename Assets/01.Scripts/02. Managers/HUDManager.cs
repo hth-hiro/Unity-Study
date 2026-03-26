@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.LowLevelPhysics2D;
 
 public class HUDManager : MonoBehaviour
 {
@@ -20,6 +19,6 @@ public class HUDManager : MonoBehaviour
 
     public void RefreshHUD()
     {
-        m_playerHUD?.Refresh();
+        //m_playerHUD?.Refresh();
     }
 }

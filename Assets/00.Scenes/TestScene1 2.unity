@@ -9887,6 +9887,7 @@ MonoBehaviour:
   m_cooldownFill: {fileID: 959242670}
   m_cooldownText: {fileID: 743537963}
   m_readyEffect: {fileID: 0}
+  m_showText: 1
 --- !u!114 &1246230635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10769,7 +10770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
   m_fillImage: {fileID: 1241573108}
-  m_hpText: {fileID: 1807285960}
+  m_valueText: {fileID: 0}
 --- !u!1 &1494537355
 GameObject:
   m_ObjectHideFlags: 0
@@ -11629,6 +11630,7 @@ MonoBehaviour:
   m_cooldownFill: {fileID: 328200402}
   m_cooldownText: {fileID: 2038589306}
   m_readyEffect: {fileID: 0}
+  m_showText: 1
 --- !u!224 &1572638801
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16194,7 +16196,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2019668065}
-  - component: {fileID: 2019668064}
   - component: {fileID: 2019668066}
   m_Layer: 0
   m_Name: HUDManager
@@ -16203,19 +16204,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2019668064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019668063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daa78889493791e41bbf11a5fa73126a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HUDManager
-  m_playerHUD: {fileID: 2101399889}
 --- !u!4 &2019668065
 Transform:
   m_ObjectHideFlags: 0

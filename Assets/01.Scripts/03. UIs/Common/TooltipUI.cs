@@ -4,9 +4,9 @@ using UnityEngine.InputSystem;
 
 public class TooltipUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text itemNameText;
-    [SerializeField] private TMP_Text descriptionText;
-    [SerializeField] private Vector2 offset = new Vector2(25f, -25f);
+    [SerializeField] private TMP_Text m_itemNameText;
+    [SerializeField] private TMP_Text m_descriptionText;
+    [SerializeField] private Vector2 m_offset = new Vector2(25f, -25f);
 
     private RectTransform rectTransform;
 
@@ -23,8 +23,8 @@ public class TooltipUI : MonoBehaviour
         var cg = GetComponent<CanvasGroup>();
         cg.alpha = 1;
 
-        itemNameText.text = item.itemName;
-        descriptionText.text = item.description;
+        m_itemNameText.text = item.ItemName;
+        m_descriptionText.text = item.Description;
 
         FollowMouse();
     }
@@ -40,6 +40,6 @@ public class TooltipUI : MonoBehaviour
         if (Mouse.current == null)
             return;
 
-        rectTransform.position = Mouse.current.position.ReadValue() + offset;
+        rectTransform.position = Mouse.current.position.ReadValue() + m_offset;
     }
 }

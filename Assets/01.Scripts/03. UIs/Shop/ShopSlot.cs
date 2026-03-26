@@ -20,7 +20,7 @@ public class ShopSlot : BaseSlot
 
         if (item != null)
         {
-            if (m_itemPriceText != null) m_itemPriceText.text = $"{item.buyPrice} G";
+            if (m_itemPriceText != null) m_itemPriceText.text = $"{item.BuyPrice} G";
         }
         else
         {

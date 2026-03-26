@@ -10,6 +10,7 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     [SerializeField] protected Image iconImage;
     [SerializeField] protected TextMeshProUGUI amountText;
     [SerializeField] protected GameObject amountGo;
+    [SerializeField] protected GameObject m_seletedGO;
 
     protected ItemData currentItem;
     protected int currentAmount;
@@ -17,10 +18,10 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     protected ISlotHandler owner;
     protected int index;
 
-    public bool IsEmpty() => currentItem == null;
-
     protected bool isHovered;
     protected bool isSelected;
+
+    public bool IsEmpty() => currentItem == null;
 
     public virtual void SetItem(ItemData item, int amount)
     {
@@ -33,7 +34,7 @@ public class BaseSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             return;
         }
 
-        iconImage.sprite = item.icon;
+        iconImage.sprite = item.Icon;
         iconImage.gameObject.SetActive(true);
 
         if (amount > 1)

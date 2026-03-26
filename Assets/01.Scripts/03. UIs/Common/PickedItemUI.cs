@@ -31,7 +31,7 @@ public class PickedItemUI : MonoBehaviour
         }
 
         gameObject.SetActive(true);
-        icon.sprite = item.icon;
+        icon.sprite = item.Icon;
         icon.enabled = true;
         amountText.text = amount > 1 ? amount.ToString() : "";
     }

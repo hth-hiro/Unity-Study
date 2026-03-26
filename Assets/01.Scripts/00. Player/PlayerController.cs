@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        InventoryUI.Instance?.gameObject.SetActive(false);
-        ShopUI.Instance?.gameObject.SetActive(false);
+        //InventoryUI.Instance?.gameObject.SetActive(false);
+        //ShopUI.Instance?.gameObject.SetActive(false);
     }
 
     void Update()
@@ -176,12 +176,12 @@ public class PlayerController : MonoBehaviour
 
     void OnToggleInventory(InputAction.CallbackContext ctx)
     {
-        InventoryManager.Instance?.OnToggleInventory(ctx);
+        //InventoryManager.Instance?.OnToggleInventory(ctx);
     }
 
     void OnToggleShop(InputAction.CallbackContext ctx)
     {
-        ShopManager.Instance?.OnToggleShop(ctx);
+        //ShopManager.Instance?.OnToggleShop(ctx);
     }
 
     public void OnSkillE(InputAction.CallbackContext ctx)
