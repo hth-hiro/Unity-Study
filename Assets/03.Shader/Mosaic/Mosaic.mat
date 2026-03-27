@@ -110,7 +110,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Resolution: 26
+    - _Resolution: 27
     - _Scale: 10
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0

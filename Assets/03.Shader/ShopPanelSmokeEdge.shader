@@ -3,26 +3,13 @@ Shader "UI/ShopPanelSmokeEdge"
     Properties
     {
         [PerRendererData] _MainTex ("Main Tex", 2D) = "white" {}
-        _Color ("Tint Color", Color) = (1,1,1,1)
-        _SmokeColor ("Smoke Color", Color) = (0.1, 0.1, 0.1, 0.6)
+        _BlackColor ("Black Color", Color) = (0.02, 0.02, 0.02, 1)
 
-        _EdgeWidth ("Edge Width", Range(0.01, 0.5)) = 0.15
-        _EdgeSoftness ("Edge Softness", Range(0.001, 0.3)) = 0.08
-        _EdgeIrregularity ("Edge Irregularity", Range(0,0.2)) = 0.05
+        _EdgeWidth ("Edge Width", Range(0.0, 0.5)) = 0.14
+        _EdgeIrregularity ("Edge Irregularity", Range(0.0, 0.2)) = 0.05
 
         _NoiseScale ("Noise Scale", Float) = 6
-        _DetailNoiseScale ("Detail Noise Scale", Float) = 12
-        _DetailNoiseStrength ("Detail Noise Strength", Range(0,1)) = 0.35
-
-        _NoiseSpeedX ("Noise Speed X", Float) = 0.1
-        _NoiseSpeedY ("Noise Speed Y", Float) = 0.25
-        _SmokeStrength ("Smoke Strength", Range(0,1)) = 0.5
-        _DistortionStrength ("Distortion Strength", Range(0,0.05)) = 0.01
-        _SmokeAlpha ("Smoke Alpha", Range(0,1)) = 0.5
-
-        _BaseAlpha ("Base Alpha", Range(0,1)) = 1
-
-        _ResidualEdgeCutoff ("Residual Edge Cutoff", Range(0,1)) = 0.8
+        _NoiseSpeed ("Noise Speed", Float) = 0.25
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -88,24 +75,13 @@ Shader "UI/ShopPanelSmokeEdge"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            fixed4 _TextureSampleAdd;
             float4 _ClipRect;
 
-            fixed4 _Color;
-            fixed4 _SmokeColor;
+            fixed4 _BlackColor;
             float _EdgeWidth;
-            float _EdgeSoftness;
             float _EdgeIrregularity;
             float _NoiseScale;
-            float _DetailNoiseScale;
-            float _DetailNoiseStrength;
-            float _NoiseSpeedX;
-            float _NoiseSpeedY;
-            float _SmokeStrength;
-            float _DistortionStrength;
-            float _SmokeAlpha;
-            float _BaseAlpha;
-            float _ResidualEdgeCutoff;
+            float _NoiseSpeed;
 
             float hash21(float2 p)
             {
@@ -128,19 +104,18 @@ Shader "UI/ShopPanelSmokeEdge"
                 return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);
             }
 
-            float fbm(float2 uv, float scale, float2 timeOffset)
+            float fbm(float2 p)
             {
                 float value = 0.0;
-                float amp = 0.5;
-                float2 p = uv * scale + timeOffset;
+                float amplitude = 0.5;
 
-                value += valueNoise(p) * amp;
+                value += valueNoise(p) * amplitude;
                 p = p * 2.03 + float2(3.1, 1.7);
-                amp *= 0.5;
-                value += valueNoise(p) * amp;
+                amplitude *= 0.5;
+                value += valueNoise(p) * amplitude;
                 p = p * 2.01 + float2(-2.4, 4.3);
-                amp *= 0.5;
-                value += valueNoise(p) * amp;
+                amplitude *= 0.5;
+                value += valueNoise(p) * amplitude;
 
                 return saturate(value / 0.875);
             }
@@ -161,53 +136,20 @@ Shader "UI/ShopPanelSmokeEdge"
             fixed4 frag(v2f IN) : SV_Target
             {
                 float2 uv = IN.texcoord;
-                float2 timeOffset = float2(_Time.y * _NoiseSpeedX, _Time.y * _NoiseSpeedY);
+                float t = _Time.y * _NoiseSpeed;
 
-                float largeNoise = fbm(uv + float2(0.0, uv.y * 0.08), _NoiseScale, timeOffset);
-                float detailNoise = fbm(uv * float2(1.2, 1.5), _DetailNoiseScale, timeOffset * 1.3 + float2(2.7, -1.9));
-                float combinedNoise = saturate(lerp(largeNoise, detailNoise, _DetailNoiseStrength));
+                float largeNoise = fbm(float2(uv.y * (_NoiseScale * 0.55), t));
+                float detailNoise = fbm(float2(uv.y * (_NoiseScale * 1.8) + 7.13, t * 1.37 + uv.y * 1.9));
+                float combinedNoise = saturate(lerp(largeNoise, detailNoise, 0.35));
 
-                float edgeShift = (combinedNoise - 0.5) * (_EdgeIrregularity * 2.0);
-                float distortedEdge = _EdgeWidth + edgeShift;
-                float leftMask = 1.0 - smoothstep(distortedEdge, distortedEdge + _EdgeSoftness, uv.x);
+                float edge = _EdgeWidth + (combinedNoise - 0.5) * (_EdgeIrregularity * 2.0);
+                float bodyMask = step(edge, uv.x);
 
-                float inwardFlow = fbm(uv + float2(_Time.y * _NoiseSpeedX * 0.5, _Time.y * _NoiseSpeedY), _NoiseScale * 1.15, timeOffset * float2(0.85, 1.1) + float2(-1.4, 0.8));
-                float plumeNoise = saturate(lerp(combinedNoise, inwardFlow, 0.45));
-                float smokeShape = saturate((plumeNoise - 0.24) / 0.76);
+                float uiClip = UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                clip(bodyMask * uiClip - 0.001);
 
-                float smokeMask = saturate(leftMask * smokeShape);
-                float finalSmokeMask = saturate(smokeMask * _SmokeStrength);
-                float finalSmokeAlpha = saturate(finalSmokeMask * _SmokeAlpha);
-
-                float edgeBand = 1.0 - smoothstep(0.0, _EdgeSoftness * 1.5 + 0.0001, abs(uv.x - distortedEdge));
-                float distortionMask = saturate(edgeBand * finalSmokeMask);
-
-                float2 distortedUV = uv;
-                distortedUV.x += (plumeNoise * 2.0 - 1.0) * _DistortionStrength * distortionMask;
-                distortedUV.y += (detailNoise * 2.0 - 1.0) * (_DistortionStrength * 0.35) * distortionMask;
-
-                fixed4 sampledBase = tex2D(_MainTex, distortedUV) + _TextureSampleAdd;
-                fixed4 baseColor = sampledBase * _Color * IN.color;
-
-                float baseContributionAlpha = sampledBase.a * _BaseAlpha * IN.color.a;
-
-                float smokeColorMix = saturate(finalSmokeMask * (0.45 + _SmokeStrength * 0.55) * _SmokeColor.a);
-                float3 finalRgb = lerp(baseColor.rgb, _SmokeColor.rgb, smokeColorMix);
-
-                float edgeFade = lerp(1.0, saturate(0.72 + plumeNoise * 0.28), finalSmokeMask);
-                float finalAlpha = baseContributionAlpha * edgeFade;
-                finalAlpha = lerp(finalAlpha, finalAlpha * saturate(0.84 + finalSmokeAlpha), finalSmokeMask);
-                finalAlpha *= step(_ResidualEdgeCutoff, finalAlpha);
-
-                fixed4 finalColor = fixed4(finalRgb, finalAlpha);
-                finalColor.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
-                finalColor.rgb *= saturate(finalColor.a);
-
-                #ifdef UNITY_UI_ALPHACLIP
-                clip(finalColor.a - 0.001);
-                #endif
-
-                return saturate(finalColor);
+                fixed3 finalRgb = _BlackColor.rgb * IN.color.rgb;
+                return fixed4(finalRgb, 1.0);
             }
             ENDCG
         }
