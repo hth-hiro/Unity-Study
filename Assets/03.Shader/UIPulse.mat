@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7008745456500746827
+--- !u!114 &-3029133755691011732
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,12 +20,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PulseWave
-  m_Shader: {fileID: 4800000, guid: 6ba0d87d17f3baf45826ecd7f02d1ed9, type: 3}
+  m_Name: UIPulse
+  m_Shader: {fileID: 4800000, guid: 190c89c4bb206974880e463d2dc76ac2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _USEALPHAPULSE_ON
+  - _USEBRIGHTNESSPULSE_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -97,9 +99,11 @@ Material:
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaPulseMax: 1
+    - _AlphaPulseMin: 0.9
+    - _AlphaPulseSpeed: 1
     - _AlphaToMask: 0
     - _BaseAlpha: 1
-    - _BaseIntensity: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -116,20 +120,18 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GlowAlpha: 0.5
-    - _GlowIntensity: 0.5
-    - _GlowRadius: 0.25
+    - _Intensity: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PulseSpeed: 1
+    - _PulseIntensity: 0.15
+    - _PulseSpeed: 0.5
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RingAlpha: 1
-    - _RingIntensity: 1
-    - _RingSoftness: 0.1
-    - _RingSpeed: 1
-    - _RingThickness: 0.05
+    - _ShineAngle: 45
+    - _ShineIntensity: 0.8
+    - _ShineSpeed: 0.5
+    - _ShineWidth: 0.2
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -141,6 +143,8 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _Surface: 0
+    - _UseAlphaPulse: 1
+    - _UseBrightnessPulse: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
@@ -148,8 +152,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GlowColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RingColor: {r: 0.5, g: 0.8, b: 1, a: 1}
+    - _ShineColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
