@@ -128,7 +128,7 @@ Material:
     - _RingAlpha: 1
     - _RingIntensity: 10
     - _RingSoftness: 0.05
-    - _RingSpeed: 1
+    - _RingSpeed: 0.5
     - _RingThickness: 0.01
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
