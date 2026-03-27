@@ -113,7 +113,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _NoiseFade: 0.001
-    - _NoiseScale: 5
+    - _NoiseScale: 10
     - _NoiseSpeed: 1
     - _NoiseSpeedX: 0.5
     - _NoiseSpeedY: 0.25
