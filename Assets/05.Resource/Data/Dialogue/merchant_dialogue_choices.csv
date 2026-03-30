@@ -1,0 +1,4 @@
+﻿DialogueId,NodeId,ChoiceText,NextNodeId
+merchant_shop,N001,물건을 본다,N010
+merchant_shop,N001,그만둔다,N020
+merchant_shop,N001,수상한 이야기를 묻는다,N030

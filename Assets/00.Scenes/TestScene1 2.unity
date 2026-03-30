@@ -7302,7 +7302,7 @@ GameObject:
   - component: {fileID: 889190764}
   - component: {fileID: 889190763}
   m_Layer: 5
-  m_Name: ShopUI
+  m_Name: DialogueUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11658,7 +11658,7 @@ GameObject:
   - component: {fileID: 1569760055}
   - component: {fileID: 1569760054}
   m_Layer: 5
-  m_Name: DialogData
+  m_Name: DialogueData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11680,8 +11680,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 500, y: 500}
-  m_SizeDelta: {x: 1000, y: 200}
+  m_AnchoredPosition: {x: 650, y: 400}
+  m_SizeDelta: {x: 1400, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1569760054
 MonoBehaviour:
@@ -11703,7 +11703,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: "\"\uCC9C\uD558\uAC00 \uBB34\uB108\uC9C0\uACE0 \uC2DC\uB300\uAC00 \uB3C4\uB798\uD588\uC73C\uB2C8\n...\"\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00f04421965a9674e82ab35a0e25978c, type: 2}
   m_sharedMaterial: {fileID: 616854404227910836, guid: 00f04421965a9674e82ab35a0e25978c, type: 2}
@@ -11730,8 +11730,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

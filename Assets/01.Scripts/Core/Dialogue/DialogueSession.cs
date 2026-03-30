@@ -1,16 +1,9 @@
 using System;
 
-namespace Core.Dialogue
+namespace Core.Dialog
 {
-    /// <summary>
-    /// Stores runtime state for one active dialogue.
-    /// </summary>
     public sealed class DialogueSession
     {
-        /// <summary>
-        /// Initializes a new dialogue session.
-        /// </summary>
-        /// <param name="dialogueData">Dialogue data to run.</param>
         public DialogueSession(DialogueData dialogueData)
         {
             DialogueData = dialogueData ?? throw new ArgumentNullException(nameof(dialogueData));
@@ -18,7 +11,7 @@ namespace Core.Dialogue
             DialogueNode startNode = DialogueData.GetNode(DialogueData.StartNodeId);
             if (startNode == null)
             {
-                throw new InvalidOperationException("Failed to start dialogue because the start node was not found.");
+                throw new InvalidOperationException("Start node was not found.");
             }
 
             CurrentNode = startNode;
@@ -31,30 +24,11 @@ namespace Core.Dialogue
             }
         }
 
-        /// <summary>
-        /// Dialogue data that owns this session.
-        /// </summary>
         public DialogueData DialogueData { get; }
-
-        /// <summary>
-        /// Current node of the running session.
-        /// </summary>
         public DialogueNode CurrentNode { get; private set; }
-
-        /// <summary>
-        /// Whether the session is currently active.
-        /// </summary>
         public bool IsActive { get; private set; }
-
-        /// <summary>
-        /// Whether the dialogue has reached an ended state.
-        /// </summary>
         public bool IsEnded { get; private set; }
 
-        /// <summary>
-        /// Moves the session to the provided node.
-        /// </summary>
-        /// <param name="node">Target node.</param>
         public void MoveToNode(DialogueNode node)
         {
             if (node == null)
@@ -64,12 +38,9 @@ namespace Core.Dialogue
 
             CurrentNode = node;
             IsEnded = node.IsEnd;
-            IsActive = !IsEnded;
+            IsActive = !node.IsEnd;
         }
 
-        /// <summary>
-        /// Ends the current session.
-        /// </summary>
         public void EndSession()
         {
             IsActive = false;
