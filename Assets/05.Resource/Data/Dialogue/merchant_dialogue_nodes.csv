@@ -1,9 +1,9 @@
 ﻿DialogueId,NodeId,SpeakerName,Text,NextNodeId,IsEnd
-merchant_intro,N001,상인,처음 보는 얼굴이군.,N002,False
-merchant_intro,N002,상인,필요한 게 있으면 말하게.,,True
-merchant_shop,N001,상인,무엇을 원하나?,,False
-merchant_shop,N010,상인,"좋아, 물건을 보여주지.",,True
-merchant_shop,N020,상인,다음에 또 오게.,,True
-merchant_shop,N030,상인,그건 비밀이지.,,True
-merchant_fail_01,N001,상인,"흠, 이번엔 잘 안 풀렸나 보군.",,True
-merchant_fail_02,N001,상인,너무 낙담하진 말게.,,True
+merchant_intro,N001,상인,천하가 무너지고 시대가 도래했으니…,N002,FALSE
+merchant_intro,N002,상인,필요한 게 있으면 말하게.,,TRUE
+merchant_shop,N001,상인,무엇을 원하나?,,FALSE
+merchant_shop,N010,상인,"좋아, 물건을 보여주지.",,TRUE
+merchant_shop,N020,상인,다음에 또 오게.,,TRUE
+merchant_shop,N030,상인,그건 비밀이지.,,TRUE
+merchant_fail_01,N001,상인,"흠, 이번엔 잘 안 풀렸나 보군.",,TRUE
+merchant_fail_02,N001,상인,너무 낙담하진 말게.,,TRUE
