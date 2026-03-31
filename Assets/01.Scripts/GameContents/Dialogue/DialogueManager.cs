@@ -2,11 +2,18 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("CSV")]
     [SerializeField] private TextAsset m_nodeCsv;
     [SerializeField] private TextAsset m_choiceCsv;
+
+    [Header("UI")]
+    [SerializeField] private GameObject m_dialogueUI;
+    [SerializeField] private TextMeshProUGUI m_speakerNameText;
+    [SerializeField] private TextMeshProUGUI m_dialogueText;
 
     private DialogueRepository m_dialogueRepository;
     private DialogueSystem m_dialogueSystem;
@@ -35,6 +42,16 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (m_dialogueUI != null)
+        {
+            m_dialogueUI.SetActive(false);
+        }
+
+        ClearDialogueText();
+    }
+
     public bool StartDialogue(string dialogueId)
     {
         if (string.IsNullOrWhiteSpace(dialogueId))
@@ -55,12 +72,23 @@ public class DialogueManager : MonoBehaviour
         DialogueData dialogueData = m_dialogueRepository.GetDialogue(dialogueId);
         if (dialogueData == null)
         {
+            Debug.LogWarning($"DialogueManager: DialogueId '{dialogueId}' was not found.");
             return false;
         }
 
         try
         {
             m_dialogueSystem.StartDialogue(dialogueData);
+            DialogueNode currentNode = m_dialogueSystem.GetCurrentNode();
+
+            Debug.Log($"DialogueManager: Request='{dialogueId}', Found='{dialogueData.DialogueId}', StartNode='{dialogueData.StartNodeId}', Text='{currentNode?.Text}'");
+
+            if (m_dialogueUI != null)
+            {
+                m_dialogueUI.SetActive(true);
+            }
+
+            RefreshCurrentNode();
             return true;
         }
         catch (Exception exception)
@@ -97,7 +125,17 @@ public class DialogueManager : MonoBehaviour
             return false;
         }
 
-        return m_dialogueSystem.Advance();
+        bool result = m_dialogueSystem.Advance();
+        if (result)
+        {
+            RefreshCurrentNode();
+        }
+        else if (!m_dialogueSystem.HasActiveSession())
+        {
+            HideDialogueUI();
+        }
+
+        return result;
     }
 
     public bool Choose(int choiceIndex)
@@ -107,7 +145,17 @@ public class DialogueManager : MonoBehaviour
             return false;
         }
 
-        return m_dialogueSystem.Choose(choiceIndex);
+        bool result = m_dialogueSystem.Choose(choiceIndex);
+        if (result)
+        {
+            RefreshCurrentNode();
+        }
+        else if (!m_dialogueSystem.HasActiveSession())
+        {
+            HideDialogueUI();
+        }
+
+        return result;
     }
 
     public void EndDialogue()
@@ -118,6 +166,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         m_dialogueSystem.EndDialogue();
+        HideDialogueUI();
     }
 
     public bool HasDialogue(string dialogueId)
@@ -128,5 +177,48 @@ public class DialogueManager : MonoBehaviour
         }
 
         return m_dialogueRepository.HasDialogue(dialogueId);
+    }
+
+    private void RefreshCurrentNode()
+    {
+        DialogueNode currentNode = GetCurrentNode();
+        if (currentNode == null)
+        {
+            ClearDialogueText();
+            return;
+        }
+
+        if (m_speakerNameText != null)
+        {
+            m_speakerNameText.text = currentNode.SpeakerName ?? string.Empty;
+        }
+
+        if (m_dialogueText != null)
+        {
+            m_dialogueText.text = currentNode.Text ?? string.Empty;
+        }
+    }
+
+    private void HideDialogueUI()
+    {
+        if (m_dialogueUI != null)
+        {
+            m_dialogueUI.SetActive(false);
+        }
+
+        ClearDialogueText();
+    }
+
+    private void ClearDialogueText()
+    {
+        if (m_speakerNameText != null)
+        {
+            m_speakerNameText.text = string.Empty;
+        }
+
+        if (m_dialogueText != null)
+        {
+            m_dialogueText.text = string.Empty;
+        }
     }
 }

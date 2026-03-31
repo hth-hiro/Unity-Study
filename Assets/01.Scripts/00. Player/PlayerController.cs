@@ -17,21 +17,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_jumpForce = 5f;
 
     [Header("FPS Look Settings")]
-    [SerializeField] private InputActionReference m_lookAction;
+    [SerializeField] private InputActionReference m_look;
     [SerializeField] private Transform m_cameraTransform;
     [SerializeField] private float m_mouseSensitivity = 0.2f;
 
     private float m_xRotation = 0f;
 
     [Header("Input Actions")]
-    [SerializeField] private InputActionReference m_moveAction;
-    [SerializeField] private InputActionReference m_toggleInventoryAction;
-    [SerializeField] private InputActionReference m_toggleShopAction;
-    [SerializeField] private InputActionReference m_jumpAction;
+    [SerializeField] private InputActionReference m_move;
+    [SerializeField] private InputActionReference m_Inventory;
+    [SerializeField] private InputActionReference m_jump;
 
     [Header("Skill Inputs")]
-    [SerializeField] private InputActionReference m_skillEAction;
-    [SerializeField] private InputActionReference m_skillShiftAction;
+    [SerializeField] private InputActionReference m_skillE;
+    [SerializeField] private InputActionReference m_skillShift;
 
     void Awake()
     {
@@ -69,23 +68,20 @@ public class PlayerController : MonoBehaviour
     // 이벤트 등록
     void OnEnable()
     {
-        m_moveAction.action.Enable();
-        m_jumpAction.action.Enable();
-        m_lookAction.action.Enable();
+        m_move.action.Enable();
+        m_jump.action.Enable();
+        m_look.action.Enable();
 
-        m_jumpAction.action.performed += OnJump;
+        m_jump.action.performed += OnJump;
 
-        m_skillEAction.action.Enable();
-        m_skillShiftAction.action.Enable();
+        m_skillE.action.Enable();
+        m_skillShift.action.Enable();
 
-        m_skillEAction.action.performed += OnSkillE;
-        m_skillShiftAction.action.performed += OnSkillShift;
+        m_skillE.action.performed += OnSkillE;
+        m_skillShift.action.performed += OnSkillShift;
 
-        m_toggleInventoryAction.action.Enable();
-        m_toggleInventoryAction.action.performed += OnToggleInventory;
-
-        m_toggleShopAction.action.Enable();
-        m_toggleShopAction.action.performed += OnToggleShop;
+        m_Inventory.action.Enable();
+        m_Inventory.action.performed += OnToggleInventory;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -94,21 +90,20 @@ public class PlayerController : MonoBehaviour
     // 이벤트 제거 (중복 방지)
     void OnDisable()
     {
-        m_toggleInventoryAction.action.performed -= OnToggleInventory;
-        m_toggleShopAction.action.performed -= OnToggleShop;
-        m_skillEAction.action.performed -= OnSkillE;
-        m_skillShiftAction.action.performed -= OnSkillShift;
+        m_Inventory.action.performed -= OnToggleInventory;
 
-        m_jumpAction.action.performed -= OnJump;
+        m_skillE.action.performed -= OnSkillE;
+        m_skillShift.action.performed -= OnSkillShift;
 
-        m_moveAction.action.Disable();
-        m_jumpAction.action.Disable();
-        m_lookAction.action.Disable();
+        m_jump.action.performed -= OnJump;
 
-        m_toggleInventoryAction.action.Disable();
-        m_toggleShopAction.action.Disable();
-        m_skillEAction.action.Disable();
-        m_skillShiftAction.action.Disable();
+        m_move.action.Disable();
+        m_jump.action.Disable();
+        m_look.action.Disable();
+
+        m_Inventory.action.Disable();
+        m_skillE.action.Disable();
+        m_skillShift.action.Disable();
     }
 
     void Start()
@@ -125,11 +120,11 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector3 moveInput = m_moveAction.action.ReadValue<Vector2>();
+        Vector3 moveInput = m_move.action.ReadValue<Vector2>();
 
         m_inputDirection = new Vector3(moveInput.x, 0f, moveInput.y);
 
-        Vector2 lookInput = m_lookAction.action.ReadValue<Vector2>();
+        Vector2 lookInput = m_look.action.ReadValue<Vector2>();
 
         float mouseX = lookInput.x * m_mouseSensitivity;
         float mouseY = lookInput.y * m_mouseSensitivity;
@@ -177,13 +172,6 @@ public class PlayerController : MonoBehaviour
     void OnToggleInventory(InputAction.CallbackContext ctx)
     {
         //InventoryManager.Instance?.OnToggleInventory(ctx);
-    }
-
-    void OnToggleShop(InputAction.CallbackContext ctx)
-    {
-        if (!ctx.performed) return;
-
-        UIManager.Instance?.ToggleShop();
     }
 
     public void OnSkillE(InputAction.CallbackContext ctx)

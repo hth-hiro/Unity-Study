@@ -1,11 +1,11 @@
-namespace Core
+
+
+public interface IInteractable
 {
-    public interface IInteractable
-    {
-        bool CanInteract { get; }
+    bool CanInteract { get; }
 
-        string InteractionName { get; }
+    string InteractionName { get; }
 
-        void Interact();
-    }
+    void Interact();
 }
+
