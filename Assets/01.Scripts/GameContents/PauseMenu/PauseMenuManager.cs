@@ -50,13 +50,20 @@ public class PauseMenuManager : MonoBehaviour
 
     public void TogglePauseMenu()
     {
-        if (m_isOpen)
+        if (!m_isOpen)
         {
-            ClosePauseMenu();
+            OpenPauseMenu();
         }
         else
         {
-            OpenPauseMenu();
+            if (IsMainPanelActive())
+            {
+                ClosePauseMenu();
+            }
+            else
+            {
+                ShowMainPanel();
+            }
         }
     }
 
@@ -181,5 +188,10 @@ public class PauseMenuManager : MonoBehaviour
     public void OnClickCharacterInfo()
     {
         ShowCharacterInfoPanel();
+    }
+
+    private bool IsMainPanelActive()
+    {
+        return m_mainPanel != null && m_mainPanel.activeSelf;
     }
 }
