@@ -52,5 +52,7 @@ public class NpcInteractable : MonoBehaviour, IInteractable
             Debug.LogWarning($"{name}: Failed to start dialogue '{m_dialogueId}'.");
             return;
         }
+
+        PlayerController.Instance?.SetInputBlock(true);
     }
 }

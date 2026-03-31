@@ -167,6 +167,8 @@ public class DialogueManager : MonoBehaviour
 
         m_dialogueSystem.EndDialogue();
         HideDialogueUI();
+
+        PlayerController.Instance?.SetInputBlock(false);
     }
 
     public bool HasDialogue(string dialogueId)

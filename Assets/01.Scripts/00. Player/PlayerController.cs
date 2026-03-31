@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     private bool m_isInputBlocked = false;
     private bool m_isGrounded;
 
+    public bool IsInputBlocked { get { return m_isInputBlocked; } }
+
     [SerializeField] private float m_moveSpeed = 10f;
     [SerializeField] private float m_jumpForce = 5f;
 
