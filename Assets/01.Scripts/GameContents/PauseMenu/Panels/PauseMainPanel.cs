@@ -32,7 +32,15 @@ public class PauseMainPanel : MonoBehaviour
     {
         if (m_pauseMenuManager != null)
         {
-            m_pauseMenuManager.QuitGame();
+            m_pauseMenuManager.ShowQuitConfirmPopup();
+        }
+    }
+
+    public void OnClickMainMenu()
+    {
+        if (m_pauseMenuManager != null)
+        {
+            m_pauseMenuManager.ShowReturnToMainMenuConfirmPopup();
         }
     }
 }

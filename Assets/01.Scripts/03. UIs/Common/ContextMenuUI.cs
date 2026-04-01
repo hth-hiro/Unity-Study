@@ -31,6 +31,8 @@ public class ContextMenuUI : MonoBehaviour
     // 버튼 클릭 이벤트
     public void OnClickAction()
     {
+        if (currentHandler == null) return;
+
         currentHandler.HandleAction(targetIndex);
         Close();
     }
@@ -38,6 +40,7 @@ public class ContextMenuUI : MonoBehaviour
     // 2. 분리
     public void OnClickSplit()
     {
+        if (currentHandler == null) return;
         currentHandler.HandleSplit(targetIndex);
         Close();
     }

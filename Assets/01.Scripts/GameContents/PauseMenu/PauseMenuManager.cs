@@ -7,6 +7,7 @@ public class PauseMenuManager : MonoBehaviour
     [SerializeField] private GameObject m_mainPanel;
     [SerializeField] private PauseSettingsPanel m_settingsPanel;
     [SerializeField] private PauseCharacterInfoPanel m_characterInfoPanel;
+    [SerializeField] private ConfirmPopup m_confirmPopup;
 
     private bool m_isOpen;
 
@@ -32,6 +33,11 @@ public class PauseMenuManager : MonoBehaviour
             m_characterInfoPanel.gameObject.SetActive(false);
         }
 
+        if (m_confirmPopup != null)
+        {
+            m_confirmPopup.Hide();
+        }
+
         m_isOpen = false;
     }
 
@@ -44,6 +50,12 @@ public class PauseMenuManager : MonoBehaviour
 
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
+            if (IsPopupOpen())
+            {
+                m_confirmPopup.Hide();
+                return;
+            }
+
             TogglePauseMenu();
         }
     }
@@ -91,6 +103,11 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ClosePauseMenu()
     {
+        if (m_confirmPopup != null)
+        {
+            m_confirmPopup.Hide();
+        }
+
         if (m_pauseMenuRoot != null)
         {
             m_pauseMenuRoot.SetActive(false);
@@ -180,6 +197,53 @@ public class PauseMenuManager : MonoBehaviour
 #endif
     }
 
+    public void ShowQuitConfirmPopup()
+    {
+        if (m_confirmPopup == null)
+        {
+            QuitGame();
+            return;
+        }
+
+        m_confirmPopup.Show("정말로 게임을 종료하시겠습니까?", QuitGame);
+    }
+
+    public void ShowReturnToMainMenuConfirmPopup()
+    {
+        if (m_confirmPopup == null)
+        {
+            ReturnToMainMenu();
+            return;
+        }
+
+        m_confirmPopup.Show("정말로 게임에서 나가시겠습니까?", ReturnToMainMenu);
+    }
+
+    public void ReturnToMainMenu()
+    {
+        Time.timeScale = 1f;
+
+        if (PlayerController.Instance != null)
+        {
+            PlayerController.Instance.SetInputBlock(false);
+        }
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        if (m_confirmPopup != null)
+        {
+            m_confirmPopup.Hide();
+        }
+
+        if (m_pauseMenuRoot != null)
+        {
+            m_pauseMenuRoot.SetActive(false);
+        }
+
+        m_isOpen = false;
+    }
+
     public void OnClickSettings()
     {
         ShowSettingsPanel();
@@ -193,5 +257,10 @@ public class PauseMenuManager : MonoBehaviour
     private bool IsMainPanelActive()
     {
         return m_mainPanel != null && m_mainPanel.activeSelf;
+    }
+
+    private bool IsPopupOpen()
+    {
+        return m_confirmPopup != null && m_confirmPopup.IsOpen();
     }
 }
