@@ -1,45 +1,60 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-// 기록을 입력받아 최종 결과를 산출하는 순수 계산기 클래스
 public class RankCalculator
 {
-    // 내부적으로 관리되며 나중에 기획 시 조정하기 쉬운 계산 기준들
-    private int m_headshotScore = 150;
-    private int m_skillKillScore = 100;
-    private int m_aerialKillScore = 200;
-    private int m_comboMultiplier = 10;
-    
-    private int m_hitPenalty = 50;
-    private int m_deathPenalty = 500;
-    
-    private float m_targetClearTime = 120f; // 목표 클리어 타임 기준 (초)
-    private int m_timeBonusPerSecond = 10;
+    private RankScoreSettings m_rankSettings;
+
+    public RankCalculator()
+    {
+        EnsureRankSettings();
+    }
+
+    public RankCalculator(RankScoreSettings rankSettings)
+    {
+        m_rankSettings = rankSettings;
+        EnsureRankSettings();
+    }
+
+    public RankScoreSettings RankSettings
+    {
+        get
+        {
+            EnsureRankSettings();
+            return m_rankSettings;
+        }
+    }
+
+    public void SetRankSettings(RankScoreSettings rankSettings)
+    {
+        m_rankSettings = rankSettings;
+        EnsureRankSettings();
+    }
 
     public RankResult Calculate(RankRecord record)
     {
-        int score = 0;
-
-        // 가점 요소 계산
-        score += record.HeadshotKills * m_headshotScore;
-        score += record.SkillKills * m_skillKillScore;
-        score += record.AerialKills * m_aerialKillScore;
-        score += record.MaxCombo * m_comboMultiplier;
-
-        // 클리어 타임 보너스 연산 (빠를수록 가점 부여)
-        float timeDiff = m_targetClearTime - record.ClearTime;
-        if (timeDiff > 0)
+        if (record == null)
         {
-            score += Mathf.FloorToInt(timeDiff) * m_timeBonusPerSecond;
+            return new RankResult(0, RankGrade.C, 0, null);
         }
 
-        // 감점 (패널티) 요소 연산
-        score -= record.HitCount * m_hitPenalty;
-        score -= record.DeathCount * m_deathPenalty;
-        
-        // 점수가 음수로 떨어지는 것을 방지
+        EnsureRankSettings();
+
+        int score = 0;
+        score += record.HeadshotKills * m_rankSettings.HeadshotScore;
+        score += record.SkillKills * m_rankSettings.SkillKillScore;
+        score += record.AerialKills * m_rankSettings.AerialKillScore;
+        score += record.MaxCombo * m_rankSettings.ComboMultiplier;
+
+        float timeDiff = m_rankSettings.TargetClearTime - record.ClearTime;
+        if (timeDiff > 0)
+        {
+            score += Mathf.FloorToInt(timeDiff) * m_rankSettings.TimeBonusPerSecond;
+        }
+
+        score -= record.HitCount * m_rankSettings.HitPenalty;
+        score -= record.DeathCount * m_rankSettings.DeathPenalty;
         score = Mathf.Max(0, score);
 
-        // 결과 산정
         RankGrade finalGrade = DetermineGrade(score);
         int rewardCurrency = CalculateReward(finalGrade);
 
@@ -48,9 +63,21 @@ public class RankCalculator
 
     private RankGrade DetermineGrade(int totalScore)
     {
-        if (totalScore >= 5000) return RankGrade.S;
-        if (totalScore >= 3000) return RankGrade.A;
-        if (totalScore >= 1000) return RankGrade.B;
+        if (totalScore >= m_rankSettings.SGradeThreshold)
+        {
+            return RankGrade.S;
+        }
+
+        if (totalScore >= m_rankSettings.AGradeThreshold)
+        {
+            return RankGrade.A;
+        }
+
+        if (totalScore >= m_rankSettings.BGradeThreshold)
+        {
+            return RankGrade.B;
+        }
+
         return RankGrade.C;
     }
 
@@ -58,11 +85,22 @@ public class RankCalculator
     {
         switch (grade)
         {
-            case RankGrade.S: return 1000;
-            case RankGrade.A: return 500;
-            case RankGrade.B: return 200;
-            case RankGrade.C: return 50;
-            default: return 0;
+            case RankGrade.S:
+                return m_rankSettings.SReward;
+            case RankGrade.A:
+                return m_rankSettings.AReward;
+            case RankGrade.B:
+                return m_rankSettings.BReward;
+            default:
+                return m_rankSettings.CReward;
+        }
+    }
+
+    private void EnsureRankSettings()
+    {
+        if (m_rankSettings == null)
+        {
+            m_rankSettings = ScriptableObject.CreateInstance<RankScoreSettings>();
         }
     }
 }

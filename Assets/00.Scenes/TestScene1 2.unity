@@ -119,6 +119,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4142568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4142569}
+  m_Layer: 0
+  m_Name: StageSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4142569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142568}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 673043440}
+  - {fileID: 562319109}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7133929
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,7 +745,7 @@ GameObject:
   - component: {fileID: 51887813}
   - component: {fileID: 51887812}
   m_Layer: 0
-  m_Name: Data
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -846,6 +879,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 64067058}
+  - component: {fileID: 64067059}
   m_Layer: 0
   m_Name: RankPanel
   m_TagString: Untagged
@@ -876,6 +910,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &64067059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64067057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43dad0c058cec3146b5de4e87fd86435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageRankResultPanelUI
+  m_panelRoot: {fileID: 64067057}
+  m_headshotRow: {fileID: 389872061}
+  m_skillRow: {fileID: 640665923}
+  m_comboRow: {fileID: 386622191}
+  m_aerialRow: {fileID: 1069328891}
+  m_clearTimeRow: {fileID: 198659771}
+  m_rankSummary: {fileID: 871938110}
+  m_conditionRows: []
 --- !u!1 &81565262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2431,6 +2485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 198659770}
+  - component: {fileID: 198659771}
   m_Layer: 0
   m_Name: ClearTimeRow
   m_TagString: Untagged
@@ -2460,6 +2515,21 @@ RectTransform:
   m_AnchoredPosition: {x: -900, y: -200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &198659771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198659769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e4ab3934443224cb611f5d20bb66c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankRecordRowUI
+  m_labelText: {fileID: 1501696847}
+  m_valueText: {fileID: 1188870900}
+  m_scoreText: {fileID: 265885904}
 --- !u!1 &203000074
 GameObject:
   m_ObjectHideFlags: 0
@@ -2989,7 +3059,7 @@ GameObject:
   - component: {fileID: 267399134}
   - component: {fileID: 267399133}
   m_Layer: 0
-  m_Name: Category
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3201,7 +3271,7 @@ GameObject:
   - component: {fileID: 291366670}
   - component: {fileID: 291366669}
   m_Layer: 0
-  m_Name: Data
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4650,6 +4720,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 386622190}
+  - component: {fileID: 386622191}
   m_Layer: 0
   m_Name: ComboRow
   m_TagString: Untagged
@@ -4679,6 +4750,21 @@ RectTransform:
   m_AnchoredPosition: {x: -900, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &386622191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386622189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e4ab3934443224cb611f5d20bb66c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankRecordRowUI
+  m_labelText: {fileID: 267399133}
+  m_valueText: {fileID: 1974315408}
+  m_scoreText: {fileID: 1451594376}
 --- !u!1 &389872059
 GameObject:
   m_ObjectHideFlags: 0
@@ -4688,6 +4774,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 389872060}
+  - component: {fileID: 389872061}
   m_Layer: 0
   m_Name: HeadShotRow
   m_TagString: Untagged
@@ -4717,6 +4804,21 @@ RectTransform:
   m_AnchoredPosition: {x: -900, y: 200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &389872061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389872059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e4ab3934443224cb611f5d20bb66c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankRecordRowUI
+  m_labelText: {fileID: 848720215}
+  m_valueText: {fileID: 51887812}
+  m_scoreText: {fileID: 460228090}
 --- !u!1 &390379938
 GameObject:
   m_ObjectHideFlags: 0
@@ -7657,6 +7759,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 555869937}
   m_CullTransparentMesh: 1
+--- !u!1 &562319107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 562319109}
+  - component: {fileID: 562319108}
+  m_Layer: 0
+  m_Name: StageRankResultController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &562319108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562319107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12b00568d05d4c848b541772194f4890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageRankResultController
+  m_rankSettings: {fileID: 11400000, guid: 61212451ba5d74e4980241c9fc71624c, type: 2}
+  m_rankTracker: {fileID: 673043439}
+  m_rankResultPanel: {fileID: 64067059}
+  m_showOnStartForTest: 0
+  m_useConditionDisplay: 1
+--- !u!4 &562319109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562319107}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4142569}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &563800137
 GameObject:
   m_ObjectHideFlags: 0
@@ -8288,6 +8439,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640665922}
+  - component: {fileID: 640665923}
   m_Layer: 0
   m_Name: SkillRow
   m_TagString: Untagged
@@ -8317,6 +8469,21 @@ RectTransform:
   m_AnchoredPosition: {x: -900, y: 100}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &640665923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640665921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e4ab3934443224cb611f5d20bb66c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankRecordRowUI
+  m_labelText: {fileID: 1443121404}
+  m_valueText: {fileID: 1636117230}
+  m_scoreText: {fileID: 522122173}
 --- !u!1 &652315853
 GameObject:
   m_ObjectHideFlags: 0
@@ -8684,6 +8851,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 662916440}
   m_CullTransparentMesh: 1
+--- !u!1 &673043438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 673043440}
+  - component: {fileID: 673043439}
+  m_Layer: 0
+  m_Name: RankTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &673043439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673043438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4a1d824be39254d991d9c617c730b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankTracker
+--- !u!4 &673043440
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673043438}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1353.0121, y: -0.00002, z: 3577.4836}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4142569}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &674760199
 GameObject:
   m_ObjectHideFlags: 0
@@ -11080,7 +11291,7 @@ GameObject:
   - component: {fileID: 848720216}
   - component: {fileID: 848720215}
   m_Layer: 0
-  m_Name: Category
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11476,6 +11687,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 871938109}
+  - component: {fileID: 871938110}
   m_Layer: 0
   m_Name: RankSummary
   m_TagString: Untagged
@@ -11504,6 +11716,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &871938110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871938108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8ff0db57e5e83941b50255871e48ddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankSummaryUI
+  m_gradeText: {fileID: 1629924960}
+  m_scoreText: {fileID: 2061332814}
+  m_gradeBackground: {fileID: 0}
+  m_sColor: {r: 0.28773582, g: 0.2893202, b: 1, a: 1}
+  m_aColor: {r: 0.9716981, g: 0.33459416, b: 0.87008053, a: 1}
+  m_bColor: {r: 1, g: 0.8260877, b: 0, a: 1}
+  m_cColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &872202708
 GameObject:
   m_ObjectHideFlags: 0
@@ -13948,6 +14180,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1069328890}
+  - component: {fileID: 1069328891}
   m_Layer: 0
   m_Name: AerialRow
   m_TagString: Untagged
@@ -13977,6 +14210,21 @@ RectTransform:
   m_AnchoredPosition: {x: -900, y: -100}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1069328891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069328889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e4ab3934443224cb611f5d20bb66c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RankRecordRowUI
+  m_labelText: {fileID: 1997953757}
+  m_valueText: {fileID: 291366669}
+  m_scoreText: {fileID: 1173747103}
 --- !u!1 &1091252470
 GameObject:
   m_ObjectHideFlags: 0
@@ -15295,7 +15543,7 @@ GameObject:
   - component: {fileID: 1188870901}
   - component: {fileID: 1188870900}
   m_Layer: 0
-  m_Name: Data
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18037,7 +18285,7 @@ GameObject:
   - component: {fileID: 1443121405}
   - component: {fileID: 1443121404}
   m_Layer: 0
-  m_Name: Category
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18647,7 +18895,7 @@ GameObject:
   - component: {fileID: 1501696848}
   - component: {fileID: 1501696847}
   m_Layer: 0
-  m_Name: Category
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20144,7 +20392,7 @@ GameObject:
   - component: {fileID: 1629924961}
   - component: {fileID: 1629924960}
   m_Layer: 0
-  m_Name: Rank
+  m_Name: RankGrade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20418,7 +20666,7 @@ GameObject:
   - component: {fileID: 1636117231}
   - component: {fileID: 1636117230}
   m_Layer: 0
-  m_Name: Data
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24903,7 +25151,7 @@ GameObject:
   - component: {fileID: 1974315409}
   - component: {fileID: 1974315408}
   m_Layer: 0
-  m_Name: Data
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25411,7 +25659,7 @@ GameObject:
   - component: {fileID: 1997953758}
   - component: {fileID: 1997953757}
   m_Layer: 0
-  m_Name: Category
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27913,3 +28161,4 @@ SceneRoots:
   - {fileID: 1208003914}
   - {fileID: 433293863}
   - {fileID: 1317391225}
+  - {fileID: 4142569}
