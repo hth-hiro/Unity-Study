@@ -6,6 +6,8 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    public event Action OnDialogueEnded;
+
     [Header("CSV")]
     [SerializeField] private TextAsset m_nodeCsv;
     [SerializeField] private TextAsset m_choiceCsv;
@@ -17,6 +19,7 @@ public class DialogueManager : MonoBehaviour
 
     private DialogueRepository m_dialogueRepository;
     private DialogueSystem m_dialogueSystem;
+    private bool m_hasEndedCurrentDialogue;
 
     private void Awake()
     {
@@ -79,6 +82,7 @@ public class DialogueManager : MonoBehaviour
         try
         {
             m_dialogueSystem.StartDialogue(dialogueData);
+            m_hasEndedCurrentDialogue = false;
             DialogueNode currentNode = m_dialogueSystem.GetCurrentNode();
 
             Debug.Log($"DialogueManager: Request='{dialogueId}', Found='{dialogueData.DialogueId}', StartNode='{dialogueData.StartNodeId}', Text='{currentNode?.Text}'");
@@ -128,11 +132,18 @@ public class DialogueManager : MonoBehaviour
         bool result = m_dialogueSystem.Advance();
         if (result)
         {
-            RefreshCurrentNode();
+            if (ShouldEndCurrentDialogue())
+            {
+                EndDialogue();
+            }
+            else
+            {
+                RefreshCurrentNode();
+            }
         }
-        else if (!m_dialogueSystem.HasActiveSession())
+        else if (ShouldEndCurrentDialogue())
         {
-            HideDialogueUI();
+            EndDialogue();
         }
 
         return result;
@@ -148,11 +159,18 @@ public class DialogueManager : MonoBehaviour
         bool result = m_dialogueSystem.Choose(choiceIndex);
         if (result)
         {
-            RefreshCurrentNode();
+            if (ShouldEndCurrentDialogue())
+            {
+                EndDialogue();
+            }
+            else
+            {
+                RefreshCurrentNode();
+            }
         }
-        else if (!m_dialogueSystem.HasActiveSession())
+        else if (ShouldEndCurrentDialogue())
         {
-            HideDialogueUI();
+            EndDialogue();
         }
 
         return result;
@@ -165,10 +183,50 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        if (m_hasEndedCurrentDialogue)
+        {
+            return;
+        }
+
+        DialogueNode currentNode = GetCurrentNode();
+        if (!m_dialogueSystem.HasActiveSession() && currentNode == null)
+        {
+            return;
+        }
+
         m_dialogueSystem.EndDialogue();
         HideDialogueUI();
 
         PlayerController.Instance?.SetInputBlock(false);
+        m_hasEndedCurrentDialogue = true;
+        OnDialogueEnded?.Invoke();
+    }
+
+    public void OnClickDialogueBackground()
+    {
+        if (!HasActiveDialogue())
+        {
+            return;
+        }
+
+        DialogueNode currentNode = GetCurrentNode();
+        if (currentNode == null)
+        {
+            return;
+        }
+
+        if (currentNode.HasChoices)
+        {
+            return;
+        }
+
+        if (m_dialogueSystem.CanAdvance())
+        {
+            Advance();
+            return;
+        }
+
+        EndDialogue();
     }
 
     public bool HasDialogue(string dialogueId)
@@ -222,5 +280,16 @@ public class DialogueManager : MonoBehaviour
         {
             m_dialogueText.text = string.Empty;
         }
+    }
+
+    private bool ShouldEndCurrentDialogue()
+    {
+        DialogueNode currentNode = GetCurrentNode();
+        if (currentNode == null)
+        {
+            return false;
+        }
+
+        return currentNode.IsEnd || !m_dialogueSystem.HasActiveSession();
     }
 }

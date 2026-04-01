@@ -16,6 +16,12 @@ public class SettingsSaveService
         try
         {
             string json = JsonUtility.ToJson(targetData, true);
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                Debug.LogWarning("SettingsSaveService: Generated json is empty.");
+                return;
+            }
+
             File.WriteAllText(GetFilePath(), json);
         }
         catch (Exception exception)
@@ -48,6 +54,16 @@ public class SettingsSaveService
             if (settingsData.Graphics == null)
             {
                 settingsData.Graphics = new GraphicsSettingsData();
+            }
+
+            if (settingsData.Audio == null)
+            {
+                settingsData.Audio = new AudioSettingsData();
+            }
+
+            if (settingsData.Play == null)
+            {
+                settingsData.Play = new PlaySettingsData();
             }
 
             return settingsData;

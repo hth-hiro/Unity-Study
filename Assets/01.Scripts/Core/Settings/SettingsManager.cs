@@ -37,6 +37,16 @@ public class SettingsManager
         get { return CurrentSettings.Graphics; }
     }
 
+    public AudioSettingsData Audio
+    {
+        get { return CurrentSettings.Audio; }
+    }
+
+    public PlaySettingsData Play
+    {
+        get { return CurrentSettings.Play; }
+    }
+
     public void Load()
     {
         if (m_settingsSaveService == null)
@@ -117,5 +127,60 @@ public class SettingsManager
     public void SetTargetFrameRate(int targetFrameRate)
     {
         Graphics.TargetFrameRate = targetFrameRate;
+    }
+
+    public void SetMasterVolume(float value)
+    {
+        Audio.MasterVolume = Mathf.Clamp01(value);
+    }
+
+    public void SetSfxVolume(float value)
+    {
+        Audio.SfxVolume = Mathf.Clamp01(value);
+    }
+
+    public void SetBgmVolume(float value)
+    {
+        Audio.BgmVolume = Mathf.Clamp01(value);
+    }
+
+    public void SetVoiceVolume(float value)
+    {
+        Audio.VoiceVolume = Mathf.Clamp01(value);
+    }
+
+    public void SetUiVolume(float value)
+    {
+        Audio.UiVolume = Mathf.Clamp01(value);
+    }
+
+    public void SetMouseSensitivity(float value)
+    {
+        Play.MouseSensitivity = Mathf.Max(0.0f, value);
+    }
+
+    public void SetCrosshairType(PlaySettingsData.CrosshairTypeOption value)
+    {
+        Play.CrosshairType = value;
+    }
+
+    public void SetCrosshairColor(Color value)
+    {
+        Play.CrosshairColor = value;
+    }
+
+    public void SetCrosshairSize(float value)
+    {
+        Play.CrosshairSize = Mathf.Max(0.0f, value);
+    }
+
+    public void SetCrosshairLength(float value)
+    {
+        Play.CrosshairLength = Mathf.Max(0.0f, value);
+    }
+
+    public void SetCrosshairOpacity(float value)
+    {
+        Play.CrosshairOpacity = Mathf.Clamp01(value);
     }
 }

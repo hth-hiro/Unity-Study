@@ -1,19 +1,22 @@
-using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
+    private const float MIN_MOUSE_SENSITIVITY = 0.001f;
+    private const float SENSITIVITY_CONVERSION_SCALE = 0.01739f;
+
     public static PlayerController Instance { get; private set; }
 
     private Rigidbody m_playerRB;
     private Vector3 m_inputDirection;
+    private SettingsManager m_settingsManager;
 
     private bool m_isInputBlocked = false;
     private bool m_isGrounded;
 
     public bool IsInputBlocked { get { return m_isInputBlocked; } }
+    public float MouseSensitivity { get { return m_mouseSensitivity; } }
 
     [SerializeField] private float m_moveSpeed = 10f;
     [SerializeField] private float m_jumpForce = 5f;
@@ -21,7 +24,7 @@ public class PlayerController : MonoBehaviour
     [Header("FPS Look Settings")]
     [SerializeField] private InputActionReference m_look;
     [SerializeField] private Transform m_cameraTransform;
-    [SerializeField] private float m_mouseSensitivity = 0.2f;
+    [SerializeField] private float m_mouseSensitivity = 11.50f;
 
     private float m_xRotation = 0f;
 
@@ -33,6 +36,9 @@ public class PlayerController : MonoBehaviour
     [Header("Skill Inputs")]
     [SerializeField] private InputActionReference m_skillE;
     [SerializeField] private InputActionReference m_skillShift;
+
+    [Header("OnGui")]
+    [SerializeField] private bool m_showSensitivityDebug = true;
 
     void Awake()
     {
@@ -47,6 +53,7 @@ public class PlayerController : MonoBehaviour
         }
 
         m_playerRB = GetComponent<Rigidbody>();
+        InitializeMouseSensitivity();
     }
 
     public void SetInputBlock(bool isBlock)
@@ -134,7 +141,11 @@ public class PlayerController : MonoBehaviour
         m_xRotation -= mouseY;
         m_xRotation = Mathf.Clamp(m_xRotation, -90f, 90f);
 
-        m_cameraTransform.localRotation = Quaternion.Euler(m_xRotation, 0f, 0f);
+        if (m_cameraTransform != null)
+        {
+            m_cameraTransform.localRotation = Quaternion.Euler(m_xRotation, 0f, 0f);
+        }
+
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -190,5 +201,37 @@ public class PlayerController : MonoBehaviour
         if (!ctx.performed) return;
 
         SkillManager.Instance?.UseSkill(1);
+    }
+
+    public void SetMouseSensitivity(float value)
+    {
+         m_mouseSensitivity = CalculateAppliedSensitivity(value);
+    }
+
+    private void InitializeMouseSensitivity()
+    {
+        try
+        {
+            m_settingsManager = new SettingsManager();
+            m_settingsManager.Load();
+
+            if (m_settingsManager.Play != null)
+            {
+                SetMouseSensitivity(m_settingsManager.Play.MouseSensitivity);
+            }
+            else
+            {
+                SetMouseSensitivity(m_mouseSensitivity);
+            }
+        }
+        catch
+        {
+            SetMouseSensitivity(m_mouseSensitivity);
+        }
+    }
+
+    private float CalculateAppliedSensitivity(float settingsValue)
+    {
+        return Mathf.Max(MIN_MOUSE_SENSITIVITY, settingsValue * SENSITIVITY_CONVERSION_SCALE);
     }
 }

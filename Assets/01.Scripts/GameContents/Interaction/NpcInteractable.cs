@@ -6,6 +6,8 @@ public class NpcInteractable : MonoBehaviour, IInteractable
     [SerializeField] private bool m_canInteract = true;
     [SerializeField] private string m_dialogueId;
     [SerializeField] private DialogueManager m_dialogueManager;
+    [SerializeField] private LobbyMenuManager m_lobbyMenuManager;
+    [SerializeField] private bool m_openLobbyMenuAfterDialogue = true;
 
     public bool CanInteract
     {
@@ -23,6 +25,21 @@ public class NpcInteractable : MonoBehaviour, IInteractable
         {
             m_dialogueManager = FindFirstObjectByType<DialogueManager>();
         }
+
+        if (m_lobbyMenuManager == null)
+        {
+            m_lobbyMenuManager = FindFirstObjectByType<LobbyMenuManager>();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeDialogueEnded();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeDialogueEnded();
     }
 
     public void Interact()
@@ -46,6 +63,8 @@ public class NpcInteractable : MonoBehaviour, IInteractable
 
         Debug.Log($"{name}: Try Start Dialogue '{m_dialogueId}'");
 
+        UnsubscribeDialogueEnded();
+
         bool started = m_dialogueManager.StartDialogue(m_dialogueId);
         if (!started)
         {
@@ -53,6 +72,34 @@ public class NpcInteractable : MonoBehaviour, IInteractable
             return;
         }
 
+        if (m_openLobbyMenuAfterDialogue)
+        {
+            m_dialogueManager.OnDialogueEnded += OnDialogueEnded;
+        }
+
         PlayerController.Instance?.SetInputBlock(true);
+    }
+
+    private void OnDialogueEnded()
+    {
+        UnsubscribeDialogueEnded();
+
+        if (!m_openLobbyMenuAfterDialogue || m_lobbyMenuManager == null)
+        {
+            return;
+        }
+
+        m_lobbyMenuManager.OpenLobbyMenu();
+        m_lobbyMenuManager.ShowMainPanel();
+    }
+
+    private void UnsubscribeDialogueEnded()
+    {
+        if (m_dialogueManager == null)
+        {
+            return;
+        }
+
+        m_dialogueManager.OnDialogueEnded -= OnDialogueEnded;
     }
 }
