@@ -74,7 +74,14 @@ public class PauseMenuManager : MonoBehaviour
             }
             else
             {
-                ShowMainPanel();
+                if (m_settingsPanel != null && m_settingsPanel.gameObject.activeSelf)
+                {
+                    m_settingsPanel.OnClickBack();
+                }
+                else
+                {
+                    ShowMainPanel();
+                }
             }
         }
     }
@@ -242,6 +249,8 @@ public class PauseMenuManager : MonoBehaviour
         }
 
         m_isOpen = false;
+
+        // TODO: 씬매니저를 통해 타이틀로 이동
     }
 
     public void OnClickSettings()

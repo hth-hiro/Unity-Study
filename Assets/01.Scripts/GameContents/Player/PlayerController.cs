@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody m_playerRB;
     private Vector3 m_inputDirection;
-    private SettingsManager m_settingsManager;
 
     private bool m_isInputBlocked = false;
     private bool m_isGrounded;
@@ -212,12 +211,9 @@ public class PlayerController : MonoBehaviour
     {
         try
         {
-            m_settingsManager = new SettingsManager();
-            m_settingsManager.Load();
-
-            if (m_settingsManager.Play != null)
+            if (SettingsManager.Instance != null && SettingsManager.Instance.Play != null)
             {
-                SetMouseSensitivity(m_settingsManager.Play.MouseSensitivity);
+                SetMouseSensitivity(SettingsManager.Instance.Play.MouseSensitivity);
             }
             else
             {

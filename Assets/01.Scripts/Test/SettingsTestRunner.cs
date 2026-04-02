@@ -11,7 +11,7 @@ public class SettingsTestRunner : MonoBehaviour
     private const float CROSSHAIR_LENGTH_STEP = 1.0f;
     private const float CROSSHAIR_OPACITY_STEP = 0.1f;
 
-    private SettingsManager m_settingsManager;
+    [SerializeField] private CrosshairSystem m_crosshairSystem;
     private readonly Color[] m_crosshairColorPresets =
     {
         Color.white,
@@ -23,10 +23,15 @@ public class SettingsTestRunner : MonoBehaviour
 
     private void Start()
     {
-        m_settingsManager = new SettingsManager();
-        m_settingsManager.Load();
-        m_settingsManager.ApplyGraphics();
-        PlayerController.Instance?.SetMouseSensitivity(m_settingsManager.Play.MouseSensitivity);
+        if (SettingsManager.Instance == null)
+        {
+            Debug.LogWarning("SettingsTestRunner: SettingsManager.Instance is null.");
+            return;
+        }
+
+        SettingsManager.Instance.Load();
+        SettingsManager.Instance.ApplyGraphics();
+        PlayerController.Instance?.SetMouseSensitivity(SettingsManager.Instance.Play.MouseSensitivity);
         LogQualityLevels();
         LogCurrentSettings("Loaded");
     }
@@ -34,7 +39,7 @@ public class SettingsTestRunner : MonoBehaviour
     private void Update()
     {
         Keyboard keyboard = Keyboard.current;
-        if (m_settingsManager == null || keyboard == null || !keyboard.f3Key.isPressed)
+        if (SettingsManager.Instance == null || keyboard == null || !keyboard.f3Key.isPressed)
         {
             return;
         }
@@ -43,16 +48,16 @@ public class SettingsTestRunner : MonoBehaviour
 
         if (keyboard.sKey.wasPressedThisFrame)
         {
-            m_settingsManager.Save();
+            SettingsManager.Instance.Save();
             LogCurrentSettings("Settings Saved");
             return;
         }
 
         if (keyboard.lKey.wasPressedThisFrame)
         {
-            m_settingsManager.Load();
-            m_settingsManager.ApplyGraphics();
-            PlayerController.Instance?.SetMouseSensitivity(m_settingsManager.Play.MouseSensitivity);
+            SettingsManager.Instance.Load();
+            SettingsManager.Instance.ApplyGraphics();
+            PlayerController.Instance?.SetMouseSensitivity(SettingsManager.Instance.Play.MouseSensitivity);
             LogCurrentSettings("Settings Loaded");
             return;
         }
@@ -65,151 +70,159 @@ public class SettingsTestRunner : MonoBehaviour
 
         if (keyboard.vKey.wasPressedThisFrame)
         {
-            bool nextVSync = !m_settingsManager.Graphics.VSyncEnabled;
-            m_settingsManager.SetVSyncEnabled(nextVSync);
-            m_settingsManager.ApplyGraphics();
+            bool nextVSync = !SettingsManager.Instance.Graphics.VSyncEnabled;
+            SettingsManager.Instance.SetVSyncEnabled(nextVSync);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("VSync Toggled");
             return;
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame)
         {
-            m_settingsManager.SetResolution(1280, 720);
-            m_settingsManager.ApplyGraphics();
+            SettingsManager.Instance.SetResolution(1280, 720);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("Resolution Changed To 1280x720");
             return;
         }
 
         if (keyboard.digit2Key.wasPressedThisFrame)
         {
-            m_settingsManager.SetResolution(1920, 1080);
-            m_settingsManager.ApplyGraphics();
+            SettingsManager.Instance.SetResolution(1920, 1080);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("Resolution Changed To 1920x1080");
             return;
         }
 
         if (keyboard.digit6Key.wasPressedThisFrame)
         {
-            m_settingsManager.SetFullscreenMode(FullScreenMode.Windowed);
-            m_settingsManager.ApplyGraphics();
+            SettingsManager.Instance.SetFullscreenMode(FullScreenMode.Windowed);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("Display Mode Changed To Windowed");
             return;
         }
 
         if (keyboard.digit7Key.wasPressedThisFrame)
         {
-            m_settingsManager.SetFullscreenMode(FullScreenMode.FullScreenWindow);
-            m_settingsManager.ApplyGraphics();
+            SettingsManager.Instance.SetFullscreenMode(FullScreenMode.FullScreenWindow);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("Display Mode Changed To FullScreenWindow");
             return;
         }
 
         if (keyboard.digit8Key.wasPressedThisFrame)
         {
-            m_settingsManager.SetFullscreenMode(FullScreenMode.ExclusiveFullScreen);
-            m_settingsManager.ApplyGraphics();
+            SettingsManager.Instance.SetFullscreenMode(FullScreenMode.ExclusiveFullScreen);
+            SettingsManager.Instance.ApplyGraphics();
             LogCurrentSettings("Display Mode Changed To ExclusiveFullScreen");
             return;
         }
 
         if (keyboard.numpad1Key.wasPressedThisFrame)
         {
-            AdjustAudioValue(m_settingsManager.Audio.MasterVolume, isShiftPressed, m_settingsManager.SetMasterVolume, "Master Volume Changed");
+            AdjustAudioValue(SettingsManager.Instance.Audio.MasterVolume, isShiftPressed, SettingsManager.Instance.SetMasterVolume, "Master Volume Changed");
             return;
         }
 
         if (keyboard.numpad2Key.wasPressedThisFrame)
         {
-            AdjustAudioValue(m_settingsManager.Audio.BgmVolume, isShiftPressed, m_settingsManager.SetBgmVolume, "BGM Volume Changed");
+            AdjustAudioValue(SettingsManager.Instance.Audio.BgmVolume, isShiftPressed, SettingsManager.Instance.SetBgmVolume, "BGM Volume Changed");
             return;
         }
 
         if (keyboard.numpad3Key.wasPressedThisFrame)
         {
-            AdjustAudioValue(m_settingsManager.Audio.SfxVolume, isShiftPressed, m_settingsManager.SetSfxVolume, "SFX Volume Changed");
+            AdjustAudioValue(SettingsManager.Instance.Audio.SfxVolume, isShiftPressed, SettingsManager.Instance.SetSfxVolume, "SFX Volume Changed");
             return;
         }
 
         if (keyboard.numpad4Key.wasPressedThisFrame)
         {
-            AdjustAudioValue(m_settingsManager.Audio.VoiceVolume, isShiftPressed, m_settingsManager.SetVoiceVolume, "Voice Volume Changed");
+            AdjustAudioValue(SettingsManager.Instance.Audio.VoiceVolume, isShiftPressed, SettingsManager.Instance.SetVoiceVolume, "Voice Volume Changed");
             return;
         }
 
         if (keyboard.numpad5Key.wasPressedThisFrame)
         {
-            AdjustAudioValue(m_settingsManager.Audio.UiVolume, isShiftPressed, m_settingsManager.SetUiVolume, "UI Volume Changed");
+            AdjustAudioValue(SettingsManager.Instance.Audio.UiVolume, isShiftPressed, SettingsManager.Instance.SetUiVolume, "UI Volume Changed");
             return;
         }
 
         if (keyboard.minusKey.wasPressedThisFrame)
         {
             float nextValue = Mathf.Clamp(
-                m_settingsManager.Play.MouseSensitivity - SENSITIVITY_STEP,
+                SettingsManager.Instance.Play.MouseSensitivity - SENSITIVITY_STEP,
                 MIN_MOUSE_SENSITIVITY,
                 MAX_MOUSE_SENSITIVITY);
-            m_settingsManager.SetMouseSensitivity(nextValue);
+            SettingsManager.Instance.SetMouseSensitivity(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             PlayerController.Instance?.SetMouseSensitivity(nextValue);
-            LogCurrentSettings("Mouse Sensitivity Decreased");
+            LogCurrentSettings($"Mouse Sensitivity Decreased : {SettingsManager.Instance.Play.MouseSensitivity:0.00}");
             return;
         }
 
         if (keyboard.equalsKey.wasPressedThisFrame)
         {
             float nextValue = Mathf.Clamp(
-                m_settingsManager.Play.MouseSensitivity + SENSITIVITY_STEP,
+                SettingsManager.Instance.Play.MouseSensitivity + SENSITIVITY_STEP,
                 MIN_MOUSE_SENSITIVITY,
                 MAX_MOUSE_SENSITIVITY);
-            m_settingsManager.SetMouseSensitivity(nextValue);
+            SettingsManager.Instance.SetMouseSensitivity(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             PlayerController.Instance?.SetMouseSensitivity(nextValue);
-            LogCurrentSettings("Mouse Sensitivity Increased");
+            LogCurrentSettings($"Mouse Sensitivity Increased : {SettingsManager.Instance.Play.MouseSensitivity:0.00}");
             return;
         }
 
-        if (keyboard.leftBracketKey.wasPressedThisFrame)
+        if (keyboard.leftBracketKey.isPressed)
         {
-            float nextValue = Mathf.Max(0.0f, m_settingsManager.Play.CrosshairSize - CROSSHAIR_SIZE_STEP);
-            m_settingsManager.SetCrosshairSize(nextValue);
-            LogCurrentSettings("Crosshair Size Decreased");
+            float nextValue = Mathf.Max(0.0f, SettingsManager.Instance.Play.CrosshairThickness - CROSSHAIR_SIZE_STEP);
+            SettingsManager.Instance.SetCrosshairThickness(nextValue);
+            SettingsManager.Instance.ApplyPlay();
+            LogCurrentSettings("Crosshair Thickness Decreased");
             return;
         }
 
-        if (keyboard.rightBracketKey.wasPressedThisFrame)
+        if (keyboard.rightBracketKey.isPressed)
         {
-            float nextValue = m_settingsManager.Play.CrosshairSize + CROSSHAIR_SIZE_STEP;
-            m_settingsManager.SetCrosshairSize(nextValue);
-            LogCurrentSettings("Crosshair Size Increased");
+            float nextValue = SettingsManager.Instance.Play.CrosshairThickness + CROSSHAIR_SIZE_STEP;
+            SettingsManager.Instance.SetCrosshairThickness(nextValue);
+            SettingsManager.Instance.ApplyPlay();
+            LogCurrentSettings("Crosshair Thickness Increased");
             return;
         }
 
-        if (keyboard.semicolonKey.wasPressedThisFrame)
+        if (keyboard.semicolonKey.isPressed)
         {
-            float nextValue = Mathf.Max(0.0f, m_settingsManager.Play.CrosshairLength - CROSSHAIR_LENGTH_STEP);
-            m_settingsManager.SetCrosshairLength(nextValue);
+            float nextValue = Mathf.Max(0.0f, SettingsManager.Instance.Play.CrosshairLength - CROSSHAIR_LENGTH_STEP);
+            SettingsManager.Instance.SetCrosshairLength(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Length Decreased");
             return;
         }
 
-        if (keyboard.quoteKey.wasPressedThisFrame)
+        if (keyboard.quoteKey.isPressed)
         {
-            float nextValue = m_settingsManager.Play.CrosshairLength + CROSSHAIR_LENGTH_STEP;
-            m_settingsManager.SetCrosshairLength(nextValue);
+            float nextValue = SettingsManager.Instance.Play.CrosshairLength + CROSSHAIR_LENGTH_STEP;
+            SettingsManager.Instance.SetCrosshairLength(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Length Increased");
             return;
         }
 
         if (keyboard.commaKey.wasPressedThisFrame)
         {
-            float nextValue = Mathf.Clamp01(m_settingsManager.Play.CrosshairOpacity - CROSSHAIR_OPACITY_STEP);
-            m_settingsManager.SetCrosshairOpacity(nextValue);
+            float nextValue = Mathf.Clamp01(SettingsManager.Instance.Play.CrosshairOpacity - CROSSHAIR_OPACITY_STEP);
+            SettingsManager.Instance.SetCrosshairOpacity(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Opacity Decreased");
             return;
         }
 
         if (keyboard.periodKey.wasPressedThisFrame)
         {
-            float nextValue = Mathf.Clamp01(m_settingsManager.Play.CrosshairOpacity + CROSSHAIR_OPACITY_STEP);
-            m_settingsManager.SetCrosshairOpacity(nextValue);
+            float nextValue = Mathf.Clamp01(SettingsManager.Instance.Play.CrosshairOpacity + CROSSHAIR_OPACITY_STEP);
+            SettingsManager.Instance.SetCrosshairOpacity(nextValue);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Opacity Increased");
             return;
         }
@@ -217,20 +230,22 @@ public class SettingsTestRunner : MonoBehaviour
         if (keyboard.slashKey.wasPressedThisFrame)
         {
             int typeCount = System.Enum.GetValues(typeof(PlaySettingsData.CrosshairTypeOption)).Length;
-            int currentTypeIndex = (int)m_settingsManager.Play.CrosshairType;
+            int currentTypeIndex = (int)SettingsManager.Instance.Play.CrosshairType;
             int nextTypeIndex = (currentTypeIndex + 1) % typeCount;
 
-            m_settingsManager.SetCrosshairType((PlaySettingsData.CrosshairTypeOption)nextTypeIndex);
+            SettingsManager.Instance.SetCrosshairType((PlaySettingsData.CrosshairTypeOption)nextTypeIndex);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Type Changed");
             return;
         }
 
         if (keyboard.backslashKey.wasPressedThisFrame)
         {
-            int currentColorIndex = GetClosestCrosshairColorIndex(m_settingsManager.Play.CrosshairColor);
+            int currentColorIndex = GetClosestCrosshairColorIndex(SettingsManager.Instance.Play.CrosshairColor);
             int nextColorIndex = (currentColorIndex + 1) % m_crosshairColorPresets.Length;
 
-            m_settingsManager.SetCrosshairColor(m_crosshairColorPresets[nextColorIndex]);
+            SettingsManager.Instance.SetCrosshairColor(m_crosshairColorPresets[nextColorIndex]);
+            SettingsManager.Instance.ApplyPlay();
             LogCurrentSettings("Crosshair Color Changed");
         }
     }
@@ -263,11 +278,11 @@ public class SettingsTestRunner : MonoBehaviour
             return;
         }
 
-        int currentQualityLevel = m_settingsManager.Graphics.QualityLevel;
+        int currentQualityLevel = SettingsManager.Instance.Graphics.QualityLevel;
         int nextQualityLevel = (currentQualityLevel + 1) % qualityCount;
 
-        m_settingsManager.SetQualityLevel(nextQualityLevel);
-        m_settingsManager.ApplyGraphics();
+        SettingsManager.Instance.SetQualityLevel(nextQualityLevel);
+        SettingsManager.Instance.ApplyGraphics();
         LogCurrentSettings("Quality Level Changed");
     }
 
@@ -281,9 +296,15 @@ public class SettingsTestRunner : MonoBehaviour
 
     private void LogCurrentSettings(string prefix)
     {
-        GraphicsSettingsData graphics = m_settingsManager.Graphics;
-        AudioSettingsData audio = m_settingsManager.Audio;
-        PlaySettingsData play = m_settingsManager.Play;
+        if (SettingsManager.Instance == null)
+        {
+            Debug.LogWarning("SettingsTestRunner: SettingsManager.Instance is null.");
+            return;
+        }
+
+        GraphicsSettingsData graphics = SettingsManager.Instance.Graphics;
+        AudioSettingsData audio = SettingsManager.Instance.Audio;
+        PlaySettingsData play = SettingsManager.Instance.Play;
 
         if (graphics == null || audio == null || play == null)
         {
@@ -312,10 +333,10 @@ public class SettingsTestRunner : MonoBehaviour
             $"Voice: {audio.VoiceVolume:0.0}, " +
             $"UI: {audio.UiVolume:0.0}\n" +
             $"Play | " +
-            $"MouseSensitivity: {play.MouseSensitivity:0.0}, " +
+            $"MouseSensitivity: {play.MouseSensitivity:0.00}, " +
             $"CrosshairType: {play.CrosshairType}, " +
             $"CrosshairColor: {play.CrosshairColor}, " +
-            $"CrosshairSize: {play.CrosshairSize:0.0}, " +
+            $"CrosshairThickness: {play.CrosshairThickness:0.0}, " +
             $"CrosshairLength: {play.CrosshairLength:0.0}, " +
             $"CrosshairOpacity: {play.CrosshairOpacity:0.0}\n" +
             $"Actual Applied State | " +

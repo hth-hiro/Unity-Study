@@ -9,17 +9,17 @@ public class PlaySettingsData
 {
     public enum CrosshairTypeOption
     {
-        Default,
         Dot,
         Cross
     }
 
-    [SerializeField] private float m_mouseSensitivity = 1.0f;
-    [SerializeField] private CrosshairTypeOption m_crosshairType = CrosshairTypeOption.Default;
+    [SerializeField] private float m_mouseSensitivity = 11.50f;
+    [SerializeField] private CrosshairTypeOption m_crosshairType = CrosshairTypeOption.Cross;
     [SerializeField] private Color m_crosshairColor = Color.white;
-    [SerializeField] private float m_crosshairSize = 16.0f;
+    [SerializeField] private float m_crosshairThickness = 4.0f;
     [SerializeField] private float m_crosshairLength = 8.0f;
     [SerializeField] private float m_crosshairOpacity = 1.0f;
+    [SerializeField] private float m_crossGap = 50.0f;
 
     public float MouseSensitivity
     {
@@ -39,10 +39,10 @@ public class PlaySettingsData
         set { m_crosshairColor = value; }
     }
 
-    public float CrosshairSize
+    public float CrosshairThickness
     {
-        get { return Mathf.Max(0.0f, m_crosshairSize); }
-        set { m_crosshairSize = Mathf.Max(0.0f, value); }
+        get { return Mathf.Max(0.0f, m_crosshairThickness); }
+        set { m_crosshairThickness = Mathf.Max(0.0f, value); }
     }
 
     public float CrosshairLength
@@ -55,5 +55,11 @@ public class PlaySettingsData
     {
         get { return Mathf.Clamp01(m_crosshairOpacity); }
         set { m_crosshairOpacity = Mathf.Clamp01(value); }
+    }
+
+    public float CrosshairGap
+    {
+        get { return Mathf.Max(0.0f, m_crossGap); }
+        set { m_crossGap = Mathf.Max(0.0f, value); }
     }
 }

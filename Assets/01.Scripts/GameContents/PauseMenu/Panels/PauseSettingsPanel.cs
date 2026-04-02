@@ -3,10 +3,10 @@ using TMPro;
 
 public class PauseSettingsPanel : MonoBehaviour
 {
-    [SerializeField] private GameObject m_graphicsPanel;
-    [SerializeField] private GameObject m_audioPanel;
-    [SerializeField] private GameObject m_gameplayPanel;
-    [SerializeField] private GameObject m_controlPanel;
+    [SerializeField] private GameObject m_graphicsTab;
+    [SerializeField] private GameObject m_audioTab;
+    [SerializeField] private GameplayTab m_gameplayTab;
+    [SerializeField] private GameObject m_controlTab;
     [SerializeField] private PauseMenuManager m_pauseMenuManager;
     [SerializeField] private TextMeshProUGUI m_graphicsLabel;
     [SerializeField] private TextMeshProUGUI m_audioLabel;
@@ -27,37 +27,37 @@ public class PauseSettingsPanel : MonoBehaviour
 
     public void ShowGraphics()
     {
-        SetPanelState(m_graphicsPanel, true);
-        SetPanelState(m_audioPanel, false);
-        SetPanelState(m_gameplayPanel, false);
-        SetPanelState(m_controlPanel, false);
+        SetPanelState(m_graphicsTab, true);
+        SetPanelState(m_audioTab, false);
+        SetPanelState(m_gameplayTab.gameObject, false);
+        SetPanelState(m_controlTab, false);
         UpdateLabelState(m_graphicsLabel);
     }
 
     public void ShowAudio()
     {
-        SetPanelState(m_graphicsPanel, false);
-        SetPanelState(m_audioPanel, true);
-        SetPanelState(m_gameplayPanel, false);
-        SetPanelState(m_controlPanel, false);
+        SetPanelState(m_graphicsTab, false);
+        SetPanelState(m_audioTab, true);
+        SetPanelState(m_gameplayTab.gameObject, false);
+        SetPanelState(m_controlTab, false);
         UpdateLabelState(m_audioLabel);
     }
 
     public void ShowGameplay()
     {
-        SetPanelState(m_graphicsPanel, false);
-        SetPanelState(m_audioPanel, false);
-        SetPanelState(m_gameplayPanel, true);
-        SetPanelState(m_controlPanel, false);
+        SetPanelState(m_graphicsTab, false);
+        SetPanelState(m_audioTab, false);
+        SetPanelState(m_gameplayTab.gameObject, true);
+        SetPanelState(m_controlTab, false);
         UpdateLabelState(m_gameplayLabel);
     }
 
     public void ShowControl()
     {
-        SetPanelState(m_graphicsPanel, false);
-        SetPanelState(m_audioPanel, false);
-        SetPanelState(m_gameplayPanel, false);
-        SetPanelState(m_controlPanel, true);
+        SetPanelState(m_graphicsTab, false);
+        SetPanelState(m_audioTab, false);
+        SetPanelState(m_gameplayTab.gameObject, false);
+        SetPanelState(m_controlTab, true);
         UpdateLabelState(m_controlLabel);
     }
 
@@ -103,10 +103,22 @@ public class PauseSettingsPanel : MonoBehaviour
 
     public void OnClickBack()
     {
+        SaveCurrentSettings();
+
         if (m_pauseMenuManager != null)
         {
             m_pauseMenuManager.ShowMainPanel();
         }
+    }
+
+    private void SaveCurrentSettings()
+    {
+        if (SettingsManager.Instance == null)
+        {
+            return;
+        }
+
+        SettingsManager.Instance.Save();
     }
 
     private void SetPanelState(GameObject panelObject, bool isActive)
