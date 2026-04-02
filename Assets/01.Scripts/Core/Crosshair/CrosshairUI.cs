@@ -86,7 +86,7 @@ public class CrosshairUI : MonoBehaviour
     private void UpdateShape()
     {
         bool isDot = m_currentType == PlaySettingsData.CrosshairTypeOption.Dot;
-        SetDotActive(isDot);
+        //SetDotActive(isDot);
         SetLineActive(!isDot);
     }
 
