@@ -104,12 +104,7 @@ public class CrosshairUI : MonoBehaviour
 
     private void UpdateSize()
     {
-        if (m_currentType == PlaySettingsData.CrosshairTypeOption.Dot)
-        {
-            SetSize(m_centerDot, new Vector2(m_currentThickness, m_currentThickness));
-            return;
-        }
-
+        SetSize(m_centerDot, new Vector2(m_currentThickness, m_currentThickness));
         SetSize(m_topLine, new Vector2(m_currentThickness, m_currentLength));
         SetSize(m_bottomLine, new Vector2(m_currentThickness, m_currentLength));
         SetSize(m_leftLine, new Vector2(m_currentLength, m_currentThickness));
@@ -118,12 +113,7 @@ public class CrosshairUI : MonoBehaviour
 
     private void UpdatePosition()
     {
-        if (m_currentType == PlaySettingsData.CrosshairTypeOption.Dot)
-        {
-            SetPosition(m_centerDot, Vector2.zero);
-            return;
-        }
-
+        SetPosition(m_centerDot, Vector2.zero);
         SetPosition(m_topLine, new Vector2(0.0f, m_crossGap));
         SetPosition(m_bottomLine, new Vector2(0.0f, -m_crossGap));
         SetPosition(m_leftLine, new Vector2(-m_crossGap, 0.0f));
