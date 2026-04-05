@@ -15,7 +15,14 @@ public class CrosshairUI : MonoBehaviour
     [SerializeField] private Image m_rightLineImage;
     [SerializeField] private Image m_centerDotImage;
 
-    [SerializeField] private CrosshairData m_data;
+    //[SerializeField] private CrosshairData m_data;
+
+    private PlaySettingsData.CrosshairTypeOption m_currentType = PlaySettingsData.CrosshairTypeOption.Cross;
+    private Color m_currentColor = Color.white;
+    private float m_currentThickness = 4.0f;
+    private float m_currentLength = 8.0f;
+    private float m_currentOpacity = 1.0f;
+    private float m_crossGap = 50f;
 
     public void ApplySettings(PlaySettingsData settings)
     {
@@ -24,14 +31,12 @@ public class CrosshairUI : MonoBehaviour
             return;
         }
 
-        EnsureData();
-
-        m_data.type = ConvertType(settings.CrosshairType);
-        m_data.color = settings.CrosshairColor;
-        m_data.thickness = ClampThickness(settings.CrosshairThickness);
-        m_data.length = ClampLength(settings.CrosshairLength);
-        m_data.opacity = ClampOpacity(settings.CrosshairOpacity);
-        m_data.gap = ClampGap(settings.CrosshairGap);
+        m_currentType = settings.CrosshairType;
+        m_currentColor = settings.CrosshairColor;
+        m_currentThickness = ClampThickness(settings.CrosshairThickness);
+        m_currentLength = ClampLength(settings.CrosshairLength);
+        m_currentOpacity = ClampOpacity(settings.CrosshairOpacity);
+        m_crossGap = settings.CrosshairGap;
 
         Refresh();
     }
@@ -52,63 +57,45 @@ public class CrosshairUI : MonoBehaviour
 
     public void SetCrosshairType(PlaySettingsData.CrosshairTypeOption crosshairType)
     {
-        EnsureData();
-        m_data.type = ConvertType(crosshairType);
+        m_currentType = crosshairType;
         Refresh();
     }
 
     public void SetCrosshairColor(Color color)
     {
-        EnsureData();
-        m_data.color = color;
+        m_currentColor = color;
         Refresh();
     }
 
     public void SetCrosshairThickness(float thickness)
     {
-        EnsureData();
-        m_data.thickness = ClampThickness(thickness);
+        m_currentThickness = ClampThickness(thickness);
         Refresh();
     }
 
     public void SetCrosshairLength(float length)
     {
-        EnsureData();
-        m_data.length = ClampLength(length);
+        m_currentLength = ClampLength(length);
         Refresh();
     }
 
     public void SetCrosshairOpacity(float opacity)
     {
-        EnsureData();
-        m_data.opacity = ClampOpacity(opacity);
+        m_currentOpacity = ClampOpacity(opacity);
         Refresh();
     }
 
     private void UpdateShape()
     {
-        EnsureData();
-
-        bool useCenterSprite =
-            m_data.type == CrosshairData.CrosshairType.Dot ||
-            m_data.type == CrosshairData.CrosshairType.Circle ||
-            m_data.type == CrosshairData.CrosshairType.Square;
-
-        if (m_centerDotImage != null && useCenterSprite)
-        {
-            m_centerDotImage.sprite = m_data.centerSprite;
-        }
-
-        SetDotActive(useCenterSprite);
-        SetLineActive(m_data.type == CrosshairData.CrosshairType.Cross);
+        bool isDot = m_currentType == PlaySettingsData.CrosshairTypeOption.Dot;
+        //SetDotActive(isDot);
+        SetLineActive(!isDot);
     }
 
     private void UpdateColor()
     {
-        EnsureData();
-
-        Color appliedColor = m_data.color;
-        appliedColor.a = m_data.opacity;
+        Color appliedColor = m_currentColor;
+        appliedColor.a = m_currentOpacity;
 
         SetImageColor(m_topLineImage, appliedColor);
         SetImageColor(m_bottomLineImage, appliedColor);
@@ -119,24 +106,20 @@ public class CrosshairUI : MonoBehaviour
 
     private void UpdateSize()
     {
-        EnsureData();
-
-        SetSize(m_centerDot, new Vector2(m_data.thickness, m_data.thickness));
-        SetSize(m_topLine, new Vector2(m_data.thickness, m_data.length));
-        SetSize(m_bottomLine, new Vector2(m_data.thickness, m_data.length));
-        SetSize(m_leftLine, new Vector2(m_data.length, m_data.thickness));
-        SetSize(m_rightLine, new Vector2(m_data.length, m_data.thickness));
+        SetSize(m_centerDot, new Vector2(m_currentThickness, m_currentThickness));
+        SetSize(m_topLine, new Vector2(m_currentThickness, m_currentLength));
+        SetSize(m_bottomLine, new Vector2(m_currentThickness, m_currentLength));
+        SetSize(m_leftLine, new Vector2(m_currentLength, m_currentThickness));
+        SetSize(m_rightLine, new Vector2(m_currentLength, m_currentThickness));
     }
 
     private void UpdatePosition()
     {
-        EnsureData();
-
         SetPosition(m_centerDot, Vector2.zero);
-        SetPosition(m_topLine, new Vector2(0.0f, m_data.gap));
-        SetPosition(m_bottomLine, new Vector2(0.0f, -m_data.gap));
-        SetPosition(m_leftLine, new Vector2(-m_data.gap, 0.0f));
-        SetPosition(m_rightLine, new Vector2(m_data.gap, 0.0f));
+        SetPosition(m_topLine, new Vector2(0.0f, m_crossGap));
+        SetPosition(m_bottomLine, new Vector2(0.0f, -m_crossGap));
+        SetPosition(m_leftLine, new Vector2(-m_crossGap, 0.0f));
+        SetPosition(m_rightLine, new Vector2(m_crossGap, 0.0f));
     }
 
     private void SetLineActive(bool isActive)
@@ -165,28 +148,6 @@ public class CrosshairUI : MonoBehaviour
     private float ClampOpacity(float opacity)
     {
         return Mathf.Clamp01(opacity);
-    }
-
-    private float ClampGap(float gap)
-    {
-        return Mathf.Max(0.0f, gap);
-    }
-
-    private CrosshairData.CrosshairType ConvertType(PlaySettingsData.CrosshairTypeOption type)
-    {
-        return type == PlaySettingsData.CrosshairTypeOption.Dot
-            ? CrosshairData.CrosshairType.Dot
-            : CrosshairData.CrosshairType.Cross;
-    }
-
-    private void EnsureData()
-    {
-        if (m_data != null)
-        {
-            return;
-        }
-
-        m_data = ScriptableObject.CreateInstance<CrosshairData>();
     }
 
     private void SetImageColor(Image image, Color color)
